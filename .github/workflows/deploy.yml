@@ -28,7 +28,7 @@ jobs:
         uses: withastro/action@v3
         with:
           # path: .         # repo root (default)
-          # node-version: 22 (default LTS)
+          node-version: 22  # Astro 6 requires >= 22.12.0; action default (v20) is outdated
           package-manager: pnpm@9
 
   deploy:
