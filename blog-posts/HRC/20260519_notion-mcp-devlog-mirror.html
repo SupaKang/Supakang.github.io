@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Notion MCP 로 devlog 자동화 인프라 절반 폐기한 회고</title>
+  <meta name="description" content="Anthropic 공식 Notion MCP 가 등장하면서 spec v3 의 Python 자동화 인프라가 절반 폐기됐다. 셀프 리뷰 13건과 cross-LLM 외부 검증 8건을 거쳐 짠 인프라가 외부 도구 한 줄로 무용해진 순간, 도메인을 인프라와 분리 설계한 v3 의 lineage 가 그대로 v4 단순화를 가능하게 했다는 회고.">
+  <meta name="author" content="Sean Kang">
+  <meta name="date" content="2026-05-19">
+  <meta name="keywords" content="Notion MCP, devlog 자동화, Claude Code, 인프라 단순화, cross-project">
+  <meta name="generator" content="OVERMIND/blog-automation">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Notion MCP 로 devlog 자동화 인프라 절반 폐기한 회고">
+  <meta property="og:description" content="Anthropic 공식 Notion MCP 가 등장하면서 spec v3 의 Python 자동화 인프라가 절반 폐기됐다. 도메인을 인프라와 분리 설계한 v3 의 lineage 가 그대로 v4 단순화를 가능하게 했다는 회고.">
+  <meta property="og:locale" content="ko_KR">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/styles/github.min.css" media="(prefers-color-scheme: light)">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/styles/github-dark.min.css" media="(prefers-color-scheme: dark)">
+  <style>
+    :root { --bg:#fff; --fg:#1a1a1a; --muted:#6b7280; --accent:#2563eb;
+            --border:#e5e7eb; --code-bg:#f6f8fa; --callout-bg:#f9fafb; }
+    @media (prefers-color-scheme: dark) {
+      :root { --bg:#0d1117; --fg:#e6edf3; --muted:#8b949e; --accent:#58a6ff;
+              --border:#30363d; --code-bg:#161b22; --callout-bg:#161b22; }
+    }
+    * { box-sizing: border-box; }
+    html, body { margin:0; padding:0; background:var(--bg); color:var(--fg); }
+    body { font-family:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+           font-size:17px; line-height:1.75; word-break:keep-all; -webkit-font-smoothing:antialiased; }
+    .container { max-width:720px; margin:0 auto; padding:64px 24px 96px; }
+    header.post-header { margin-bottom:48px; padding-bottom:32px; border-bottom:1px solid var(--border); }
+    .eyebrow { color:var(--muted); font-size:13px; letter-spacing:0.08em; text-transform:uppercase; font-weight:600; }
+    h1 { font-size:36px; line-height:1.3; margin:12px 0 16px; letter-spacing:-0.02em; font-weight:700; }
+    .lede { color:var(--muted); font-size:18px; line-height:1.7; margin:0 0 20px; }
+    .meta { color:var(--muted); font-size:14px; }
+    .tags { margin-top:16px; display:flex; flex-wrap:wrap; gap:8px; }
+    .tag { display:inline-block; padding:4px 10px; font-size:13px;
+           border:1px solid var(--border); border-radius:999px; color:var(--muted); }
+    nav.toc { margin:32px 0; padding:16px 20px; background:var(--callout-bg);
+              border:1px solid var(--border); border-radius:8px; font-size:14px; }
+    nav.toc h2 { font-size:13px; margin:0 0 8px; color:var(--muted); letter-spacing:0.08em; text-transform:uppercase; }
+    nav.toc ol { margin:0; padding-left:20px; }
+    nav.toc li { margin:4px 0; }
+    nav.toc a { color:var(--fg); }
+    h2 { font-size:24px; margin:56px 0 16px; letter-spacing:-0.01em; font-weight:700; }
+    h3 { font-size:19px; margin:32px 0 12px; font-weight:600; }
+    p { margin:16px 0; }
+    a { color:var(--accent); text-decoration:none; border-bottom:1px solid transparent; }
+    a:hover { border-bottom-color:var(--accent); }
+    blockquote { margin:24px 0; padding:12px 20px; border-left:3px solid var(--accent);
+                 background:var(--callout-bg); color:var(--muted); font-style:italic; }
+    code { font-family:"JetBrains Mono","SF Mono",Menlo,Consolas,monospace;
+           font-size:0.9em; background:var(--code-bg); padding:2px 6px; border-radius:4px; }
+    pre { background:var(--code-bg); padding:16px 20px; border-radius:8px;
+          overflow-x:auto; border:1px solid var(--border); margin:20px 0; }
+    pre code { background:transparent; padding:0; font-size:14px; line-height:1.6; }
+    table { width:100%; border-collapse:collapse; margin:24px 0; font-size:15px; }
+    th, td { padding:10px 14px; border-bottom:1px solid var(--border); text-align:left; vertical-align:top; }
+    th { color:var(--muted); font-weight:600; }
+    ul, ol { padding-left:24px; }
+    li { margin:6px 0; }
+    .callout { margin:24px 0; padding:16px 20px; background:var(--callout-bg);
+               border:1px solid var(--border); border-radius:8px; font-size:15px; line-height:1.7; }
+    .callout-title { font-weight:600; color:var(--fg); margin-bottom:6px; }
+    figure { margin:24px 0; }
+    figcaption { color:var(--muted); font-size:14px; text-align:center; margin-top:8px; }
+    footer.post-footer { margin-top:80px; padding-top:32px; border-top:1px solid var(--border);
+                         color:var(--muted); font-size:13px; }
+    footer.post-footer code { font-size:12px; }
+  </style>
+</head>
+<body>
+  <article class="container">
+    <header class="post-header">
+      <div class="eyebrow">OVERMIND · 2026-05-19</div>
+      <h1>Notion MCP 로 devlog 자동화 인프라 절반 폐기한 회고</h1>
+      <p class="lede">1인 운영자가 cross-project devlog 자동화를 위해 Python 자체 인프라를 풀로 설계했다가, Anthropic 공식 Notion MCP 가 나오면서 인프라 절반을 폐기한 회고.</p>
+      <div class="meta">2026-05-19 · 14분 읽기</div>
+      <div class="tags">
+        <span class="tag">Notion MCP</span>
+        <span class="tag">devlog 자동화</span>
+        <span class="tag">Claude Code</span>
+        <span class="tag">인프라 단순화</span>
+        <span class="tag">cross-project</span>
+      </div>
+    </header>
+
+    <nav class="toc">
+      <h2>목차</h2>
+      <ol>
+        <li><a href="#sec-1">claude mcp add 한 줄과 사라진 Python 300줄</a></li>
+        <li><a href="#sec-2">v3 에서 살아남은 것, v4 에서 폐기된 것</a></li>
+        <li><a href="#sec-3">Phase 0 30분: MCP 인증 → DB 생성 → 툴 매핑</a></li>
+        <li><a href="#sec-4">잘못된 파일 1차 patch 와 drift 감지</a></li>
+        <li><a href="#sec-5">R1 dog-fooding: search 0 → create 1, 2 MCP 호출 3초 안</a></li>
+        <li><a href="#sec-6">외부 도구가 단순화 기회가 되도록 spec 을 짜는 방법</a></li>
+      </ol>
+    </nav>
+
+    <section>
+      <h2 id="sec-1">claude mcp add 한 줄과 사라진 Python 300줄</h2>
+
+      <p>Claude Code 와 Notion 을 같이 쓰는 1인 운영자라면, 두 도구 사이에 자체 인프라를 쌓아 본 경험이 한 번쯤 있을 것이다. 나는 7개 프로젝트의 devlog 를 cross-project 로 자동 동기화하려고 spec v3 까지 짰었다. notion_push.py 300~400 줄 + requests + .env 5개 + retry CLI + Bash timeout 모델. 셀프 리뷰 13건, cross-LLM 외부 검증 8건 P0/P1/P2 까지 모두 반영한 spec 이었다.</p>
+
+      <p>그러다가 2026-05-19 아침에 <code>claude mcp add --transport http notion https://mcp.notion.com/mcp</code> 한 줄을 실행했다. Anthropic 공식 Notion MCP 가 등록되는 순간이었다. 그 다음 <code>claude mcp list</code> 를 쳤다.</p>
+
+      <pre><code class="language-bash">$ claude mcp list
+Checking MCP server health...
+notion: https://mcp.notion.com/mcp (HTTP) - ✓ Connected</code></pre>
+
+      <p>그 줄을 보는 순간 v3 의 인프라 절반이 즉시 redundant 가 됐다는 걸 알았다. 인증 (OAuth 2.1) 은 MCP 가 알아서. API 호출은 Claude session 안에서 in-process. HTTP timeout 모델은 불요. API 버전 추적도 MCP 가 자동. v3 에서 공들여 설계한 .env 5개와 Bash 5초 timeout 과 retry CLI 가 한 번에 의미를 잃었다.</p>
+
+      <p>처음 든 감정은 "wasted work" 였다. 셀프 리뷰 13건을 직접 코멘트로 달았고, cross-LLM 외부 검증에서는 Notion API 가 2025-09-03 부터 database/data_source 개념을 분리한다는 사실까지 P0 로 잡아냈었다. 그 모든 작업이 인프라 한 줄에 의해 무용해진 것 같았다. <strong>이 Notion MCP devlog 자동화 회고는 그 wasted 감정을 어떻게 단순화 기회로 재해석했는지에 대한 기록이다</strong>.</p>
+
+      <h2 id="sec-2">v3 에서 살아남은 것, v4 에서 폐기된 것</h2>
+
+      <p>다행히 v3 에서 살아남은 게 있었다. 도메인 정책 — Source Key 기반 upsert / 19 필드 schema / 자동 16 + 수동 3 필드 분리 / Managed By='manual' 보존 / graceful degradation / backfill non-empty fail-fast. 이 정책들은 v3 작성 단계에서 "Python script 안에 결합" 시키지 않고 spec 의 §7~§9 도메인 모델로 따로 박아뒀었다.</p>
+
+      <table>
+        <thead>
+          <tr><th>항목</th><th>v3</th><th>v4</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>인증</td><td>NOTION_TOKEN .env</td><td>MCP OAuth 2.1</td></tr>
+          <tr><td>API 호출</td><td>Python <code>requests</code></td><td>Claude → MCP tool call</td></tr>
+          <tr><td>HTTP timeout</td><td>Bash timeout 5초 + 내부 2.5초</td><td>MCP 세션 내 (불요)</td></tr>
+          <tr><td>API 버전 추적</td><td>NOTION_VERSION=2026-03-11</td><td>MCP 자동 관리</td></tr>
+          <tr><td>Python script</td><td>notion_push.py 300~400 LoC</td><td>폐기 — 스킬 본문 instruction 107줄</td></tr>
+          <tr><td>.env 환경변수</td><td>5개 (TOKEN/DB_ID/DS_ID/VERSION/ENABLED)</td><td>1개 (ENABLED 만, 비상 차단용)</td></tr>
+          <tr><td>retry CLI</td><td><code>notion_push.py retry --all</code></td><td>/devlog 시작 STEP 에 자동 retry</td></tr>
+          <tr><td>도메인 정책</td><td>spec §7~§9 명시</td><td>그대로 보존</td></tr>
+        </tbody>
+      </table>
+
+      <p>표 마지막 줄이 핵심이었다. 도메인 정책이 인프라 변경에 면역이 되도록 spec 을 짠 게 v4 단순화를 가능하게 했다. 만약 Source Key 같은 upsert 로직을 Python notion_push.py 함수 안에 직접 박았다면, v4 마이그레이션 비용 = spec 재작성 수준이었을 것이다. 30년차 휴리스틱으로 "도메인 정책 &lt; Python script" 가 아니라 "도메인 정책 &gt; API client 코드" 라는 원칙. 본 Notion MCP devlog 자동화 작업에서 그 원칙의 가치가 정직하게 실측됐다.</p>
+
+      <h2 id="sec-3">Phase 0 30분: MCP 인증 → DB 생성 → 툴 매핑</h2>
+
+      <p>본격 작업은 Phase 0 4건 통과로 시작했다. R0-A 는 <code>claude mcp list</code> 출력에 <code>notion ✓ Connected</code> 가 뜨는지 확인. OAuth prompt 없이 즉시 가용 상태였다. R0-B 는 가용 MCP 툴 14종을 본 spec §10 의 4 용도 (search / create-pages / update-page / fetch) 에 매핑하는 작업. spec 원래 <code>mcp__notion__query_database</code> 류로 추정했었는데, 실제 가용 툴명은 <code>mcp__notion__notion-search</code> 같은 dash 표기였다. spec §10 을 그 자리에서 갱신.</p>
+
+      <p>R0-C 가 가장 큰 단계였다. Notion 안에 OVERMIND parent page 신규 + 그 안에 DevLog DB + 19 필드 schema 를 한 번에 만들었다. parent page 는 <code>notion-create-pages</code> 의 parent 키 자체를 omit (시도해보니 빈 문자열 page_id 는 422 거부, parent 키 자체 생략하면 workspace-level 으로 자동 생성됨) 으로 해결. DB 는 <code>notion-create-database</code> 에 SQL DDL 한 줄로:</p>
+
+      <pre><code class="language-sql">CREATE TABLE (
+  "Log Title" TITLE,
+  "Source Key" RICH_TEXT COMMENT 'Upsert key {PROJECT_KEY}:{YYYYMMDD}',
+  "Date" DATE,
+  "Project" SELECT('HRC':blue, 'NM':green, 'OC':orange, 'SL':purple, 'WDD':pink),
+  "Managed By" SELECT('script':blue, 'manual':green),
+  "Manual Note" RICH_TEXT COMMENT 'User free note - never overwritten',
+  ...
+)</code></pre>
+
+      <p>19 필드 (Title 1 + Text 9 + Date 1 + URL 1 + Select 7) 가 한 번에 만들어졌다. R0-D 는 <code>notion-fetch</code> 로 DB ID 호출해서 schema 응답이 정상인지 확인. 응답 자체에 data-source-state 전체가 들어 있어서 R0-C 의 산출물과 자동 cross-check 됐다. Phase 0 4건 전체 약 30분 (사용자 인터랙션 포함).</p>
+
+      <h2 id="sec-4">잘못된 파일 1차 patch 와 drift 감지</h2>
+
+      <p>여기서 본 글에서 가장 정직하게 적어야 할 삽질 장면이 등장한다.</p>
+
+      <p>Stage 1 변경 #1 — <code>/devlog</code> 스킬 본문에 STEP 0.5 (.pending 자동 재시도) + STEP 4 (Notion MCP push) 약 107 줄 instruction 을 추가하는 작업. Claude Code 의 글로벌 스킬은 <code>~/.claude/skills/&lt;name&gt;/SKILL.md</code> 또는 <code>~/.claude/commands/&lt;name&gt;.md</code> 위치인데, 나는 1차 patch 를 <code>commands/devlog.md</code> 에 적용했다. 그게 활성 본문이라고 알고 있었다 (예전 어딘가에서 본 듯한 인상).</p>
+
+      <p><code>/devlog HRC</code> 를 호출하니 첫 메시지가 이상했다. 본문에 STEP 0.5 / STEP 4 가 없었다. 호출 출력의 첫 줄을 다시 봤다.</p>
+
+      <pre><code class="language-text">Base directory for this skill: ~\.claude\skills\devlog</code></pre>
+
+      <p>활성 본문은 <code>skills/devlog/SKILL.md</code> 였다. commands 쪽은 다른 무엇이었거나 deprecated 였다. 두 파일이 같은지 비교했더니:</p>
+
+      <pre><code class="language-bash">$ diff -q skills/devlog/SKILL.md commands/devlog.md
+$ wc -l skills/devlog/SKILL.md commands/devlog.md
+  442 skills/devlog/SKILL.md
+  442 commands/devlog.md</code></pre>
+
+      <p><code>diff -q</code> 가 침묵 (= identical). 두 파일이 1대1 미러본 442 줄. 글로벌 스킬은 git tracked 가 아니라 drift 감지 기회 0. AI 코딩 도구가 잘못된 파일에 patch 를 적용해도 즉시 알아차릴 방법 없음. 활성 본문이 어디인지 호출 시 base directory 출력으로 확인하는 게 유일한 방어였다.</p>
+
+      <p>AI 도구 활용 부분 정직 고백: 나는 1차 patch 위치를 Claude 에게 위임했고, Claude 가 commands/ 를 골랐다. Claude 의 판단을 비난할 수는 없다 — 둘 중 어디가 활성인지 가르쳐 주지 않았으니까. <strong>하지만 AI 가 못 잡는 영역이 정확히 어딘지를 이번 사건이 보여줬다</strong>. AI 는 두 파일의 미러 관계를 자동으로 알 길이 없고, 활성 본문 위치는 실행 시 base directory 가 알려준다. 사람이 그 출력을 읽고 검증해야 한다.</p>
+
+      <p>조치: 양쪽 동시 patch + 메모리에 drift 정책 defer 결정 박음. 단일 source 통합 vs 미러 sync 자동화 의 정책은 별도 cycle 로 (Notion MCP devlog 자동화 본 cycle 의 자연 경계 외).</p>
+
+      <h2 id="sec-5">R1 dog-fooding: search 0 → create 1, 2 MCP 호출 3초 안</h2>
+
+      <p>양쪽 patch 완료 후 <code>/devlog HRC</code> 재호출. 이번엔 본문에 STEP 0.5 + STEP 4 모두 활성. 본 회고 글의 대상 devlog 가 그대로 첫 row 가 됐다.</p>
+
+      <pre><code class="language-bash"># STEP 4-1: Source Key search
+$ mcp__notion__notion-search query="HRC:20260519" \
+    data_source_url="collection://03a9e46b-..."
+{"results":[], "type":"workspace_search"}
+
+# STEP 4-3: 0건 → create
+$ mcp__notion__notion-create-pages parent.data_source_id="03a9e46b-..." \
+    properties={"Log Title":"[HRC] 2026-05-19", "Source Key":"HRC:20260519", ...}
+{"pages":[{"id":"365f17bd-...aa15", "url":"https://www.notion.so/365f17bd...aa15"}]}</code></pre>
+
+      <p>search 1회 (0건) + create 1회 = 2 MCP 호출. 3초 예산 안 (정확한 latency 측정값은 없지만 체감상 1초 미만). 16 자동 필드 (Log Title / Source Key / Date / Project / Status / Summary / Issue / Decision / Next Action / Related URL / Source Path / First Push Source / Last Push Source / Synced At / Managed By + Category, Priority 2개는 omit) 가 정확히 매칭. 수동 3 필드 (Manual Note / Review Comment / Stakeholder Memo) 는 properties 에서 의식적 제외 — Managed By='manual' 정책의 핵심.</p>
+
+      <p>Notion UI 에서 row 1개 가시화 확인. R1 DoD ("HRC /devlog → Notion row 1개 3초 내, Source Key 매칭") 통과. <strong>본 Notion MCP devlog 자동화 의 첫 dog-fooding 이 동시에 R1 검증이 되는 흐름이 가능했던 건, 도메인·인프라 분리 spec 의 부산물이었다</strong>.</p>
+
+      <p>후속 갱신 1줄로 devlog 본문 마지막 "다음 스텝" 의 R1 항목을 ✅ 통과로 변경. 메모리 4건 추가 (글로벌 스킬 위치 reference / DB 식별자 reference / Stage 1 운영 중 project / drift 정책 defer project) — 다음 세션 재발견 비용 0.</p>
+
+      <h2 id="sec-6">외부 도구가 단순화 기회가 되도록 spec 을 짜는 방법</h2>
+
+      <p>본 Notion MCP devlog 자동화 작업에서 검증된 5단계 체크리스트가 남았다.</p>
+
+      <ol>
+        <li><strong>도메인·인프라 분리</strong> — spec 안에서 도메인 모델 (Source Key / 필드 분리 / 불변식) 을 인프라 (API client / .env / retry) 와 다른 §로 박는다. 한 §에 섞이면 외부 도구 등장 시 둘이 같이 죽는다.</li>
+        <li><strong>cross-LLM 외부 검증을 default</strong> — 외부 API 통합 spec 은 셀프 리뷰만으로 'API 2025-09-03 분리' 같은 외부 사실을 영구히 못 잡는다. cross-LLM 권고를 spec frontmatter 에 박아 강제.</li>
+        <li><strong>글로벌 스킬 drift 정책</strong> — <code>~/.claude/skills/&lt;name&gt;/SKILL.md</code> 와 <code>~/.claude/commands/&lt;name&gt;.md</code> 가 미러본일 수 있다. 활성 본문 위치는 호출 시 base directory 출력으로 확인. AI 가 못 잡는 영역.</li>
+        <li><strong>5단계 lineage 보존</strong> — v1 → v2 (셀프 리뷰) → v3 (cross-LLM) → v4 (인프라 위임) 의 spec 버전 lineage 를 frontmatter prev_versions 에 박는다. wasted work 처럼 보이는 v3 가 v4 도메인 정책의 정당화로 살아남는다.</li>
+        <li><strong>dog-fooding 이 R1 라이브 검증</strong> — 새 기능의 첫 실 사용을 검증 시나리오로 설계. 본 Notion MCP devlog 자동화 가 첫 호출에서 R1 통과 + 같은 row 가 본 글의 회고 대상이 되는 메타-순환 가능.</li>
+      </ol>
+
+      <p>다음에 외부 도구 등장으로 자체 인프라 절반이 무용해지는 상황 만나면, 위 5단계 체크리스트를 spec frontmatter 에 박아 두자. wasted 감정을 단순화 기회로 재해석하는 30초 cost 가 며칠치 마이그레이션 비용을 아낀다.</p>
+    </section>
+
+    <footer class="post-footer">
+      Generated from <code>devlogs/HRC/20260519.md</code> · OVERMIND/blog-automation
+    </footer>
+  </article>
+  <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+</body>
+</html>
