@@ -1,0 +1,178 @@
+@import "tailwindcss";
+
+/* 099 Style Reference — Terminal aesthetic, digital workbench
+   source: D:/Projects/infra/SK/blog/blog_design/sample_md.md
+   policy: achromatic only, monospace only, dark only, no shadows
+   spec: 20260519_github_pages_publish_automation_v4.md §8.3 / §8.4 */
+
+@theme {
+  /* Colors — Achromatic only */
+  --color-midnight-oil: #000000;
+  --color-ghost-white:  #ffffff;
+  --color-steel-gray:   #1d1d1d;
+  --color-muted-ash:    #383838;
+  --color-dim-gray:     #888888;
+
+  /* Typography — Soehne Mono only */
+  --font-mono: 'Soehne Mono', 'Space Mono', 'Fira Code',
+               ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  /* Spacing */
+  --spacing-5:  5px;
+  --spacing-6:  6px;
+  --spacing-8:  8px;
+  --spacing-16: 16px;
+  --spacing-19: 19px;
+  --spacing-26: 26px;
+  --spacing-27: 27px;
+  --spacing-32: 32px;
+
+  /* Border Radius — 0 or 10px only */
+  --radius-lg: 10px;
+}
+
+/* Reset + base */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--color-midnight-oil);
+  color: var(--color-ghost-white);
+  font-family: var(--font-mono);
+  font-size: 16px;
+  line-height: 1.20;
+  letter-spacing: 0.24px;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: "zero";
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+
+a {
+  color: var(--color-ghost-white);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 120ms ease;
+}
+
+a:hover {
+  border-bottom-color: var(--color-ghost-white);
+}
+
+/* Headings — all Soehne Mono, no display font */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-mono);
+  font-weight: 400;
+  font-size: 16px;
+  margin: 0;
+  letter-spacing: 0.24px;
+}
+
+/* Code (inline + block) */
+code {
+  font-family: var(--font-mono);
+  font-size: 16px;
+  background: var(--color-steel-gray);
+  padding: 2px 6px;
+  border-radius: 6px;
+}
+
+pre {
+  background: var(--color-steel-gray);
+  padding: 19px 26px;
+  border-radius: 10px;
+  overflow-x: auto;
+  margin: 16px 0;
+}
+
+pre code {
+  background: transparent;
+  padding: 0;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+/* Tables */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 16px;
+}
+
+th, td {
+  padding: 8px 16px;
+  border-bottom: 1px solid var(--color-muted-ash);
+  text-align: left;
+  vertical-align: top;
+}
+
+th {
+  color: var(--color-dim-gray);
+  font-weight: 400;
+}
+
+/* Blockquote */
+blockquote {
+  margin: 16px 0;
+  padding: 16px 26px;
+  border-left: 1px solid var(--color-muted-ash);
+  color: var(--color-dim-gray);
+}
+
+/* Lists */
+ul, ol {
+  padding-left: 26px;
+}
+
+li {
+  margin: 6px 0;
+}
+
+/* Utility — 099 patterns */
+.card-elevated {
+  background: var(--color-steel-gray);
+  border-radius: 10px;
+}
+
+.card-content {
+  background: transparent;
+  border-radius: 10px;
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--color-ghost-white);
+  border: 1px solid var(--color-muted-ash);
+  border-radius: 10px;
+  padding: 19px 26px;
+  font-family: var(--font-mono);
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 120ms ease;
+}
+
+.btn-ghost:hover {
+  background: var(--color-steel-gray);
+}
+
+.btn-subtle {
+  background: var(--color-steel-gray);
+  color: var(--color-ghost-white);
+  border: none;
+  border-radius: 10px;
+  padding: 19px 26px;
+  font-family: var(--font-mono);
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.text-secondary {
+  color: var(--color-dim-gray);
+}

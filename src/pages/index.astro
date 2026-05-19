@@ -1,0 +1,160 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog'))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 6);
+
+const projects = [
+  { slug: 'hrc', name: 'HRC', desc: '시우량 기반 홍수량 산정 · FastAPI + React + GIS' },
+  { slug: 'nm', name: 'NM',  desc: '(placeholder — 사용자 description 입력 대기)' },
+  { slug: 'oc', name: 'OC',  desc: '(placeholder)' },
+  { slug: 'sl', name: 'SL',  desc: '(placeholder)' },
+  { slug: 'wdd', name: 'WDD', desc: '(placeholder)' },
+  { slug: 'crw', name: 'CRW', desc: '(placeholder)' },
+  { slug: 'ds', name: 'DS',  desc: '(placeholder)' },
+];
+---
+<BaseLayout
+  title="supablog | Sean Kang"
+  description="1인 운영자, FE 중심 풀스택. GIS·수문학 도메인 + AI 도구 협업 회고"
+>
+  <section class="hero">
+    <div class="hero-grid">
+      <div class="card-content hero-info">
+        <h1>supablog</h1>
+        <p class="text-secondary mt-16">
+          1인 운영자, FE 중심 풀스택. GIS·수문학 도메인 + AI 도구 협업 회고.
+        </p>
+      </div>
+      <div class="card-elevated hero-image">
+        <div class="hero-num">019</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-header">
+      <h2>Featured Projects</h2>
+      <a href="/projects/" class="btn-ghost">Show All</a>
+    </div>
+    <div class="grid grid-cols-3-md-2-sm-1">
+      {projects.slice(0, 6).map(p => (
+        <a href={`/projects/#${p.slug}`} class="project-card">
+          <div class="card-num text-secondary">{p.name}</div>
+          <div class="card-desc mt-8">{p.desc}</div>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-header">
+      <h2>Latest Posts</h2>
+      <a href="/blog/" class="btn-ghost">Show All</a>
+    </div>
+    {posts.length === 0 ? (
+      <p class="text-secondary">아직 게시된 글이 없습니다.</p>
+    ) : (
+      <div class="grid grid-cols-3-md-2-sm-1">
+        {posts.map(post => (
+          <a href={`/blog/${post.id}/`} class="post-card">
+            <div class="text-secondary">{post.data.pubDate.toISOString().slice(0, 10)}</div>
+            <div class="post-title mt-8">{post.data.title}</div>
+            <div class="text-secondary mt-16">{post.data.readMin ?? '–'}분 읽기 · {post.data.project ?? '—'}</div>
+          </a>
+        ))}
+      </div>
+    )}
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    margin: 48px 0;
+  }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 16px;
+  }
+  .hero-info {
+    padding: 26px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    min-height: 200px;
+  }
+  .hero-info h1 {
+    font-size: 16px;
+  }
+  .hero-image {
+    aspect-ratio: 16 / 9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .hero-num {
+    font-size: 96px;
+    color: var(--color-dim-gray);
+    letter-spacing: 0.24px;
+    font-weight: 400;
+  }
+  .section {
+    margin: 48px 0;
+  }
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  .grid {
+    display: grid;
+    gap: 16px;
+  }
+  .grid-cols-3-md-2-sm-1 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .project-card,
+  .post-card {
+    padding: 26px;
+    border: 1px solid var(--color-muted-ash);
+    border-radius: 10px;
+    background: transparent;
+    text-decoration: none;
+    color: var(--color-ghost-white);
+    border-bottom: 1px solid var(--color-muted-ash);
+    transition: background 120ms ease;
+  }
+  .project-card:hover,
+  .post-card:hover {
+    background: var(--color-steel-gray);
+  }
+  .post-title {
+    font-weight: 400;
+  }
+  .card-num {
+    font-size: 14px;
+  }
+  .mt-8 { margin-top: 8px; }
+  .mt-16 { margin-top: 16px; }
+
+  @media (max-width: 1024px) {
+    .grid-cols-3-md-2-sm-1 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (max-width: 640px) {
+    .grid-cols-3-md-2-sm-1 {
+      grid-template-columns: 1fr;
+    }
+    .hero-grid {
+      grid-template-columns: 1fr;
+    }
+    .hero-num {
+      font-size: 64px;
+    }
+  }
+</style>

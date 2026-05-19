@@ -1,0 +1,85 @@
+---
+const navItems = [
+  { href: '/', label: 'Home' },
+  { href: '/blog/', label: 'Blog' },
+  { href: '/about/', label: 'About' },
+  { href: '/projects/', label: 'Projects' },
+  { href: '/contact/', label: 'Contact' },
+];
+const currentPath = Astro.url.pathname;
+
+function isActive(href: string) {
+  if (href === '/') return currentPath === '/';
+  return currentPath.startsWith(href);
+}
+---
+<header class="site-header">
+  <div class="header-row">
+    <div class="left"><span class="text-secondary">Menu_</span></div>
+    <div class="center"><a href="/" class="brand">supablog</a></div>
+    <div class="right"><a href="/contact/">Contact</a></div>
+  </div>
+  <nav class="nav-row">
+    {navItems.map(item => (
+      <a
+        href={item.href}
+        class:list={['nav-link', { active: isActive(item.href) }]}
+      >
+        {item.label}
+      </a>
+    ))}
+  </nav>
+</header>
+
+<style>
+  .site-header {
+    border-bottom: 1px solid var(--color-muted-ash);
+    padding: 16px 0;
+    background: var(--color-midnight-oil);
+  }
+  .header-row {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 0 26px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+  }
+  .left, .right {
+    flex: 1;
+    font-size: 16px;
+  }
+  .right {
+    text-align: right;
+  }
+  .center {
+    flex: 0;
+  }
+  .brand {
+    font-size: 16px;
+    color: var(--color-ghost-white);
+    border-bottom: none;
+  }
+  .brand:hover {
+    border-bottom: none;
+    color: var(--color-dim-gray);
+  }
+  .nav-row {
+    max-width: 1600px;
+    margin: 16px auto 0;
+    padding: 0 26px;
+    display: flex;
+    gap: 26px;
+    font-size: 14px;
+  }
+  .nav-link {
+    color: var(--color-dim-gray);
+  }
+  .nav-link.active {
+    color: var(--color-ghost-white);
+  }
+  .text-secondary {
+    color: var(--color-dim-gray);
+  }
+</style>

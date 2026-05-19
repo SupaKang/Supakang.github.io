@@ -1,0 +1,23 @@
+{
+  "name": "supakang.github.io",
+  "version": "1.0.0",
+  "description": "supablog - tech blog (Astro + Tailwind v4 + 099 design)",
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "check": "astro check"
+  },
+  "keywords": [],
+  "author": "Sean Kang",
+  "license": "MIT",
+  "dependencies": {
+    "@astrojs/mdx": "^5.0.6",
+    "@tailwindcss/vite": "^4.3.0",
+    "astro": "^6.3.5",
+    "tailwindcss": "^4.3.0"
+  }
+}

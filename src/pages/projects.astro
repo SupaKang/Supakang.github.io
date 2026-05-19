@@ -1,0 +1,76 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const projects = [
+  {
+    slug: 'hrc',
+    name: 'HRC',
+    desc: '시우량 기반 홍수량 산정 (재해영향평가용). FastAPI + React 19 + Firebase + GIS (PostGIS/GeoServer/MapLibre) + SWMM/EPANET.',
+    role: '풀스택 개발',
+    status: 'active',
+  },
+  { slug: 'nm',  name: 'NM',  desc: '(placeholder — 사용자 description 입력 대기)', role: '—', status: 'active' },
+  { slug: 'oc',  name: 'OC',  desc: '(placeholder)', role: '—', status: 'active' },
+  { slug: 'sl',  name: 'SL',  desc: '(placeholder)', role: '—', status: 'active' },
+  { slug: 'wdd', name: 'WDD', desc: '(placeholder)', role: '—', status: 'active' },
+  { slug: 'crw', name: 'CRW', desc: '(placeholder)', role: '—', status: 'active' },
+  { slug: 'ds',  name: 'DS',  desc: '(placeholder)', role: '—', status: 'active' },
+];
+---
+<BaseLayout title="Projects | supablog" description="진행 중인 7 프로젝트 목록 — HRC / NM / OC / SL / WDD / CRW / DS">
+  <section class="section">
+    <h1>Projects</h1>
+    <p class="text-secondary mt-16">진행 중인 7 프로젝트 — 각 도메인·역할·상태 요약</p>
+  </section>
+
+  <section class="section">
+    <div class="grid">
+      {projects.map(p => (
+        <article id={p.slug} class="project-card">
+          <div class="card-num text-secondary">{p.name}</div>
+          <div class="card-desc mt-8">{p.desc}</div>
+          <div class="card-meta mt-16">
+            <span class="text-secondary">{p.role}</span>
+            <span class="status-tag">{p.status}</span>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .section { margin: 48px 0; }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  .project-card {
+    padding: 26px;
+    border: 1px solid var(--color-muted-ash);
+    border-radius: 10px;
+  }
+  .card-num { font-size: 14px; }
+  .card-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+  }
+  .status-tag {
+    display: inline-block;
+    padding: 5px 8px;
+    background: var(--color-steel-gray);
+    border-radius: 10px;
+  }
+  .text-secondary { color: var(--color-dim-gray); }
+  .mt-8 { margin-top: 8px; }
+  .mt-16 { margin-top: 16px; }
+  @media (max-width: 1024px) {
+    .grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 640px) {
+    .grid { grid-template-columns: 1fr; }
+  }
+</style>

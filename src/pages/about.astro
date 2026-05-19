@@ -1,0 +1,111 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const bio = '1인 운영자, FE 중심 풀스택. GIS·수문학 도메인 + AI 도구 협업. (사용자 bio 입력 대기 — Phase 1 dry-run 중 update)';
+
+const career = [
+  { period: 'YYYY-MM ~ 현재', role: '(placeholder — 사용자 경력 입력 대기)', company: '' },
+];
+
+const stacks = [
+  { group: 'Frontend', items: ['React 19', 'TypeScript', 'Vite', 'Tailwind CSS', 'Zustand', 'Astro'] },
+  { group: 'Backend', items: ['Python 3.11', 'FastAPI', 'Pydantic v2', 'NumPy/SciPy/Pandas'] },
+  { group: 'GIS / 수문학', items: ['PostGIS', 'GeoServer', 'MapLibre/deck.gl', 'SWMM', 'EPANET', 'PySwMM'] },
+  { group: 'Infra / DevOps', items: ['Docker', 'GitHub Actions', 'Vercel', 'Render/GCP', 'Firebase'] },
+  { group: 'AI / Tools', items: ['Claude Code (Opus 4.7)', 'Anthropic Notion MCP', 'OpenAI', 'Cursor'] },
+  { group: '(placeholder)', items: ['사용자 입력 후 update'] },
+];
+---
+<BaseLayout title="About | supablog" description="Sean Kang 자기 소개 — 경력, 기술 스택, 관심사">
+  <section class="section">
+    <h1>About</h1>
+    <div class="card-content about-info">
+      <p class="mt-16">{bio}</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2 class="section-title">Career</h2>
+    <div class="career-list">
+      {career.map(c => (
+        <div class="career-item">
+          <div class="text-secondary">{c.period}</div>
+          <div class="mt-8">{c.role}</div>
+          {c.company && <div class="text-secondary mt-8">{c.company}</div>}
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section class="section">
+    <h2 class="section-title">Stack</h2>
+    <div class="stack-grid">
+      {stacks.map(s => (
+        <div class="stack-card">
+          <div class="text-secondary stack-group">{s.group}</div>
+          <div class="stack-items mt-8">
+            {s.items.map(item => <span class="stack-tag">{item}</span>)}
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .section {
+    margin: 48px 0;
+  }
+  .section-title {
+    font-size: 16px;
+    margin-bottom: 16px;
+    color: var(--color-dim-gray);
+    text-transform: uppercase;
+    letter-spacing: 0.24px;
+  }
+  .about-info {
+    padding: 26px;
+    margin-top: 16px;
+  }
+  .career-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .career-item {
+    padding: 26px;
+    border: 1px solid var(--color-muted-ash);
+    border-radius: 10px;
+  }
+  .stack-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  .stack-card {
+    padding: 26px;
+    border: 1px solid var(--color-muted-ash);
+    border-radius: 10px;
+  }
+  .stack-group {
+    font-size: 14px;
+  }
+  .stack-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .stack-tag {
+    display: inline-block;
+    padding: 5px 8px;
+    background: var(--color-steel-gray);
+    border-radius: 10px;
+    font-size: 14px;
+  }
+  .text-secondary { color: var(--color-dim-gray); }
+  .mt-8 { margin-top: 8px; }
+  .mt-16 { margin-top: 16px; }
+  @media (max-width: 640px) {
+    .stack-grid { grid-template-columns: 1fr; }
+  }
+</style>
