@@ -3,28 +3,53 @@ const year = new Date().getFullYear();
 ---
 <footer class="site-footer">
   <div class="footer-row">
-    <div>© {year} Sean Kang</div>
-    <div class="text-secondary">supablog · Astro + 099 design</div>
+    <div>© {year} SupaKang</div>
+    <div class="footer-links">
+      <a href="/blog/">Blog</a>
+      <a href="/projects/">Projects</a>
+      <a href="https://github.com/SupaKang" target="_blank" rel="noopener">GitHub</a>
+    </div>
   </div>
 </footer>
 
 <style>
   .site-footer {
     border-top: 1px solid var(--color-muted-ash);
-    padding: 32px 0;
-    margin-top: 48px;
+    padding: 28px 0;
+    margin-top: 28px;
   }
   .footer-row {
-    max-width: 1600px;
+    max-width: 1480px;
     margin: 0 auto;
-    padding: 0 26px;
+    padding: 0 56px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 16px;
     font-size: 14px;
+    color: var(--color-dim-gray);
+  }
+  .footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 14px;
+  }
+  .footer-links a {
+    color: var(--color-midnight-oil);
+    font-weight: 650;
   }
   .text-secondary {
     color: var(--color-dim-gray);
+  }
+  @media (max-width: 720px) {
+    .footer-row {
+      align-items: flex-start;
+      flex-direction: column;
+      padding: 0 20px;
+    }
+    .footer-links {
+      justify-content: flex-start;
+    }
   }
 </style>

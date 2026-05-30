@@ -56,16 +56,23 @@ const stacks = [
   .section {
     margin: 48px 0;
   }
+  h1 {
+    font-size: clamp(36px, 4.2vw, 58px);
+  }
   .section-title {
-    font-size: 16px;
+    font-size: 14px;
     margin-bottom: 16px;
-    color: var(--color-dim-gray);
+    color: var(--color-signal-cyan);
     text-transform: uppercase;
-    letter-spacing: 0.24px;
+    font-weight: 750;
   }
   .about-info {
     padding: 26px;
     margin-top: 16px;
+    border: 1px solid var(--color-muted-ash);
+    border-radius: 22px;
+    background: #ffffff;
+    box-shadow: 0 18px 44px rgba(24, 25, 29, 0.06);
   }
   .career-list {
     display: flex;
@@ -75,7 +82,9 @@ const stacks = [
   .career-item {
     padding: 26px;
     border: 1px solid var(--color-muted-ash);
-    border-radius: 10px;
+    border-radius: 22px;
+    background: #ffffff;
+    box-shadow: 0 14px 36px rgba(24, 25, 29, 0.05);
   }
   .stack-grid {
     display: grid;
@@ -85,7 +94,9 @@ const stacks = [
   .stack-card {
     padding: 26px;
     border: 1px solid var(--color-muted-ash);
-    border-radius: 10px;
+    border-radius: 22px;
+    background: #ffffff;
+    box-shadow: 0 14px 36px rgba(24, 25, 29, 0.05);
   }
   .stack-group {
     font-size: 14px;
@@ -98,8 +109,9 @@ const stacks = [
   .stack-tag {
     display: inline-block;
     padding: 5px 8px;
-    background: var(--color-steel-gray);
-    border-radius: 10px;
+    background: var(--color-blue-soft);
+    color: var(--color-signal-cyan);
+    border-radius: 999px;
     font-size: 14px;
   }
   .text-secondary { color: var(--color-dim-gray); }

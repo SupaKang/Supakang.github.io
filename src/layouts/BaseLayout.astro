@@ -29,18 +29,46 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 </head>
 <body>
-  <Header />
-  <main class="container">
-    <slot />
-  </main>
-  <Footer />
+  <div class="site-frame">
+    <Header />
+    <main class="container">
+      <slot />
+    </main>
+    <Footer />
+  </div>
 </body>
 </html>
 
 <style is:global>
+  .site-frame {
+    width: min(1680px, calc(100% - 64px));
+    min-height: calc(100vh - 112px);
+    margin: clamp(36px, 6vw, 96px) auto;
+    overflow: hidden;
+    background: var(--color-shell);
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    border-radius: 34px;
+    box-shadow:
+      0 34px 80px rgba(24, 25, 29, 0.14),
+      0 2px 0 rgba(255, 255, 255, 0.75) inset;
+  }
+
   .container {
-    max-width: 1600px;
+    max-width: 1480px;
     margin: 0 auto;
-    padding: 32px 26px 48px;
+    padding: 36px 56px 54px;
+  }
+
+  @media (max-width: 900px) {
+    .site-frame {
+      width: min(100% - 24px, 760px);
+      margin: 12px auto;
+      border-radius: 24px;
+      min-height: calc(100vh - 24px);
+    }
+
+    .container {
+      padding: 26px 20px 40px;
+    }
   }
 </style>

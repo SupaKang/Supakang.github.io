@@ -28,6 +28,9 @@ const links = [
 
 <style>
   .section { margin: 48px 0; }
+  h1 {
+    font-size: clamp(36px, 4.2vw, 58px);
+  }
   .contact-list {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -36,14 +39,19 @@ const links = [
   .contact-card {
     padding: 26px;
     border: 1px solid var(--color-muted-ash);
-    border-radius: 10px;
+    border-radius: 22px;
     text-decoration: none;
     color: var(--color-ghost-white);
-    border-bottom: 1px solid var(--color-muted-ash);
-    transition: background 120ms ease;
+    background: #ffffff;
+    box-shadow: 0 14px 36px rgba(24, 25, 29, 0.05);
+    transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
   }
-  .contact-card:hover { background: var(--color-steel-gray); }
-  .contact-handle { font-weight: 400; }
+  .contact-card:hover {
+    transform: translateY(-3px);
+    border-color: rgba(49, 88, 245, 0.28);
+    box-shadow: 0 24px 52px rgba(24, 25, 29, 0.1);
+  }
+  .contact-handle { font-weight: 750; }
   .text-secondary { color: var(--color-dim-gray); }
   .mt-8 { margin-top: 8px; }
   .mt-16 { margin-top: 16px; }

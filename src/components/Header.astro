@@ -16,11 +16,7 @@ function isActive(href: string) {
 <header class="site-header">
   <div class="header-row">
     <a href="/" class="brand" aria-label="Go to home">
-      <span class="brand-mark">SK</span>
-      <span class="brand-copy">
-        <span class="brand-name">SupaKang</span>
-        <span class="brand-subtitle">AI-native product log</span>
-      </span>
+      <span class="brand-name">SUPA</span>
     </a>
 
     <nav class="nav-row" aria-label="Primary navigation">
@@ -33,25 +29,29 @@ function isActive(href: string) {
         </a>
       ))}
     </nav>
+
+    <a href="/contact/" class="language-pill" aria-label="Open contact page">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="12" cy="12" r="9"></circle>
+        <path d="M3 12h18M12 3c2.4 2.7 3.6 5.7 3.6 9S14.4 18.3 12 21M12 3C9.6 5.7 8.4 8.7 8.4 12S9.6 18.3 12 21"></path>
+      </svg>
+      <span>EN</span>
+    </a>
   </div>
 </header>
 
 <style>
   .site-header {
-    position: sticky;
-    top: 0;
-    z-index: 20;
-    border-bottom: 1px solid rgba(52, 59, 73, 0.85);
-    background: rgba(8, 9, 11, 0.92);
-    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--color-muted-ash);
+    background: var(--color-shell);
   }
 
   .header-row {
-    max-width: 1280px;
+    max-width: 1480px;
     margin: 0 auto;
-    padding: 14px 24px;
-    display: flex;
-    justify-content: space-between;
+    padding: 32px 56px;
+    display: grid;
+    grid-template-columns: 180px minmax(0, 1fr) 180px;
     align-items: center;
     gap: 24px;
   }
@@ -59,7 +59,6 @@ function isActive(href: string) {
   .brand {
     display: inline-flex;
     align-items: center;
-    gap: 12px;
     min-width: 0;
     border-bottom: none;
   }
@@ -68,42 +67,19 @@ function isActive(href: string) {
     border-bottom: none;
   }
 
-  .brand-mark {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 34px;
-    height: 34px;
-    border: 1px solid var(--color-accent-orange);
-    border-radius: 8px;
-    color: var(--color-accent-orange);
-    background: rgba(255, 122, 26, 0.08);
-    font-size: 13px;
-    line-height: 1;
-  }
-
-  .brand-copy {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-
   .brand-name {
-    color: var(--color-ghost-white);
-    font-size: 15px;
-    line-height: 1.1;
-  }
-
-  .brand-subtitle {
-    color: var(--color-dim-gray);
-    font-size: 12px;
-    line-height: 1.1;
+    color: var(--color-signal-cyan);
+    font-size: clamp(30px, 3.2vw, 44px);
+    font-weight: 850;
+    line-height: 1;
+    letter-spacing: 0;
   }
 
   .nav-row {
     display: flex;
     align-items: center;
-    gap: 8px;
+    justify-content: center;
+    gap: clamp(18px, 3vw, 44px);
     overflow-x: auto;
     scrollbar-width: none;
   }
@@ -114,37 +90,74 @@ function isActive(href: string) {
 
   .nav-link {
     flex: 0 0 auto;
-    padding: 8px 10px;
+    padding: 8px 0;
     border: 1px solid transparent;
-    border-radius: 8px;
     color: var(--color-dim-gray);
-    font-size: 14px;
+    font-size: 17px;
+    font-weight: 600;
     line-height: 1;
   }
 
   .nav-link:hover {
-    color: var(--color-ghost-white);
-    border-color: var(--color-muted-ash);
-    background: var(--color-panel);
+    color: var(--color-midnight-oil);
   }
 
   .nav-link.active {
     color: var(--color-midnight-oil);
-    border-color: var(--color-accent-orange);
-    background: var(--color-accent-orange);
+    font-weight: 800;
+  }
+
+  .language-pill {
+    justify-self: end;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-width: 88px;
+    min-height: 52px;
+    padding: 0 18px;
+    border: 1px solid var(--color-muted-ash);
+    border-radius: 999px;
+    color: var(--color-midnight-oil);
+    background: rgba(255, 255, 255, 0.54);
+    font-size: 16px;
+    font-weight: 750;
+    box-shadow: 0 12px 30px rgba(24, 25, 29, 0.04);
+  }
+
+  .language-pill svg {
+    width: 23px;
+    height: 23px;
+    stroke: var(--color-midnight-oil);
+    stroke-width: 1.9;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
   }
 
   @media (max-width: 720px) {
     .header-row {
-      align-items: flex-start;
-      flex-direction: column;
-      gap: 14px;
-      padding: 14px 18px;
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      padding: 24px 20px 18px;
     }
 
     .nav-row {
+      grid-column: 1 / -1;
+      justify-content: flex-start;
       width: 100%;
       padding-bottom: 2px;
+      gap: 22px;
+    }
+
+    .nav-link {
+      font-size: 15px;
+    }
+
+    .language-pill {
+      min-width: 74px;
+      min-height: 44px;
+      padding: 0 14px;
     }
   }
 </style>

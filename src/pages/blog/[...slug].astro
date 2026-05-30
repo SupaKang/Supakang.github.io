@@ -48,6 +48,13 @@ const relatedPosts = allPosts
       )}
     </header>
 
+    <div class="post-visual" aria-hidden="true">
+      <span class="visual-badge">{data.category}</span>
+      <span class="visual-line line-one"></span>
+      <span class="visual-line line-two"></span>
+      <span class="visual-line line-three"></span>
+    </div>
+
     <div class="post-layout">
       <aside class="post-side" aria-label="Post actions">
         <a href="/blog/" class="side-link">Back to Blog</a>
@@ -114,7 +121,7 @@ const relatedPosts = allPosts
 <style>
   .post-shell {
     max-width: 1120px;
-    margin: 48px auto 72px;
+    margin: 28px auto 72px;
   }
 
   .breadcrumb {
@@ -129,6 +136,7 @@ const relatedPosts = allPosts
 
   .breadcrumb a {
     color: var(--color-signal-cyan);
+    font-weight: 750;
   }
 
   .post-header {
@@ -152,7 +160,7 @@ const relatedPosts = allPosts
 
   .post-header h1 {
     margin-top: 18px;
-    font-size: 42px;
+    font-size: clamp(34px, 4.6vw, 58px);
   }
 
   .lede {
@@ -162,6 +170,82 @@ const relatedPosts = allPosts
 
   .tags {
     margin-top: 18px;
+  }
+
+  .post-visual {
+    position: relative;
+    min-height: 320px;
+    margin: 34px 0 0;
+    overflow: hidden;
+    border-radius: 28px;
+    background:
+      linear-gradient(180deg, rgba(20, 22, 30, 0.08), rgba(5, 7, 12, 0.72)),
+      radial-gradient(circle at 18% 20%, rgba(255, 255, 255, 0.42), transparent 20%),
+      linear-gradient(135deg, #3158f5 0%, #18253e 46%, #07090f 100%);
+    box-shadow: 0 26px 58px rgba(24, 25, 29, 0.14);
+  }
+
+  .post-visual::before {
+    content: "";
+    position: absolute;
+    inset: 22% -8% auto 44%;
+    height: 35%;
+    border: 1px solid rgba(255, 255, 255, 0.27);
+    border-radius: 34px;
+    transform: rotate(-13deg);
+  }
+
+  .post-visual::after {
+    content: "";
+    position: absolute;
+    right: 11%;
+    top: 15%;
+    width: 27%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.36), transparent 62%);
+  }
+
+  .visual-badge {
+    position: absolute;
+    top: 24px;
+    left: 24px;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    min-height: 34px;
+    padding: 0 14px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.22);
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 750;
+    backdrop-filter: blur(16px);
+  }
+
+  .visual-line {
+    position: absolute;
+    left: 9%;
+    height: 12px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.24);
+    transform: rotate(-8deg);
+  }
+
+  .line-one {
+    width: 40%;
+    top: 38%;
+  }
+
+  .line-two {
+    width: 28%;
+    top: 48%;
+    left: 16%;
+  }
+
+  .line-three {
+    width: 50%;
+    top: 58%;
   }
 
   .post-layout {
@@ -183,7 +267,8 @@ const relatedPosts = allPosts
 
   .side-link {
     width: fit-content;
-    color: var(--color-accent-orange);
+    color: var(--color-signal-cyan);
+    font-weight: 750;
   }
 
   .side-note {
@@ -192,6 +277,11 @@ const relatedPosts = allPosts
   }
 
   .content {
+    padding: 34px;
+    border: 1px solid var(--color-muted-ash);
+    border-radius: 24px;
+    background: #ffffff;
+    box-shadow: 0 18px 44px rgba(24, 25, 29, 0.06);
     font-size: 16px;
     line-height: 1.75;
   }
@@ -255,12 +345,12 @@ const relatedPosts = allPosts
     display: grid;
     gap: 8px;
     padding: 18px;
-    border-bottom: 1px solid var(--color-muted-ash);
   }
 
   .adjacent-card:hover {
-    border-color: var(--color-accent-orange);
-    background: var(--color-panel-soft);
+    border-color: rgba(49, 88, 245, 0.28);
+    background: #ffffff;
+    transform: translateY(-2px);
   }
 
   .adjacent-card strong {
@@ -282,7 +372,8 @@ const relatedPosts = allPosts
 
   .section-kicker {
     margin-bottom: 14px;
-    color: var(--color-accent-orange);
+    color: var(--color-signal-cyan);
+    font-weight: 750;
     font-size: 13px;
     text-transform: uppercase;
   }
@@ -297,12 +388,12 @@ const relatedPosts = allPosts
     display: grid;
     gap: 12px;
     padding: 18px;
-    border-bottom: 1px solid var(--color-muted-ash);
   }
 
   .related-card:hover {
-    border-color: var(--color-signal-cyan);
-    background: var(--color-panel-soft);
+    border-color: rgba(49, 88, 245, 0.28);
+    background: #ffffff;
+    transform: translateY(-2px);
   }
 
   .related-card h2 {
@@ -343,6 +434,16 @@ const relatedPosts = allPosts
 
     .post-header h1 {
       font-size: 30px;
+    }
+
+    .post-visual {
+      min-height: 230px;
+      border-radius: 22px;
+    }
+
+    .content {
+      padding: 24px 18px;
+      border-radius: 20px;
     }
   }
 </style>

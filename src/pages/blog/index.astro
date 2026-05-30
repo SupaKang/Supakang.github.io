@@ -5,100 +5,133 @@ import { getCollection } from 'astro:content';
 const posts = (await getCollection('blog'))
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
-const featuredPost = posts.find(post => post.data.featured) ?? posts[0];
-const listPosts = featuredPost ? posts.filter(post => post.id !== featuredPost.id) : [];
-
 const categories = ['All', 'AI Workflow', 'Internal Tools', 'Construction Tech', 'GIS / CAD / DXF', 'Build Log', 'Postmortem'];
+const visuals = ['visual-ai', 'visual-workflow', 'visual-cad', 'visual-sun', 'visual-rain', 'visual-system'];
 
 function countFor(category: string) {
   if (category === 'All') return posts.length;
   return posts.filter(post => post.data.category === category).length;
 }
+
+function formatDate(date: Date) {
+  return date.toLocaleDateString('en', { month: 'short', day: '2-digit' });
+}
+
+const decoratedPosts = posts.map((post, index) => ({
+  post,
+  visual: visuals[index % visuals.length],
+  isFeature: index === 0,
+  searchText: [
+    post.data.title,
+    post.data.description,
+    post.data.category,
+    post.data.project ?? '',
+    ...post.data.tags,
+  ].join(' ').toLocaleLowerCase(),
+}));
 ---
 <BaseLayout title="Blog | SupaKang" description="Build logs, AI workflow notes, and domain software development records.">
-  <section class="page-hero">
-    <div>
-      <div class="eyebrow">Technical log</div>
-      <h1>Build logs for AI-native internal tools.</h1>
-      <p class="text-secondary hero-copy">
-        Notes on AI workflows, construction and environmental software, GIS/CAD data, automation loops,
-        and the messy path from domain work to usable tools.
-      </p>
-    </div>
-    <div class="hero-count surface-card">
-      <span>{posts.length}</span>
-      <p class="text-secondary">published notes</p>
-    </div>
-  </section>
-
-  <section class="filter-bar" aria-label="Post categories">
-    {categories.map((category, index) => (
-      <button
-        type="button"
-        class:list={['filter-button', { active: index === 0 }]}
-        data-filter={category}
-        aria-pressed={index === 0 ? 'true' : 'false'}
-      >
-        <span>{category}</span>
-        <span class="filter-count">{countFor(category)}</span>
-      </button>
-    ))}
-  </section>
-
-  {posts.length === 0 ? (
-    <section class="section">
-      <p class="text-secondary">No posts yet.</p>
-    </section>
-  ) : (
-    <>
-      {featuredPost && (
-        <section class="featured-section" data-post-card data-category={featuredPost.data.category}>
-          <a href={`/blog/${featuredPost.id}/`} class="featured-card surface-card">
-            <div class="featured-meta">
-              <span class="pill orange">Featured</span>
-              <span>{featuredPost.data.category}</span>
-              <span>{featuredPost.data.pubDate.toISOString().slice(0, 10)}</span>
-            </div>
-            <h2>{featuredPost.data.title}</h2>
-            <p class="text-secondary">{featuredPost.data.description}</p>
-            <div class="featured-footer">
-              <span>{featuredPost.data.readMin ?? '-'} min read</span>
-              {featuredPost.data.project && <span class="pill cyan">{featuredPost.data.project}</span>}
-            </div>
-          </a>
-        </section>
-      )}
-
-      <section class="post-list" aria-label="All posts">
-        {listPosts.map(post => (
-          <a href={`/blog/${post.id}/`} class="post-row" data-post-card data-category={post.data.category}>
-            <div class="post-date">{post.data.pubDate.toISOString().slice(0, 10)}</div>
-            <div class="post-main">
-              <div class="post-tags">
-                <span class="pill orange">{post.data.category}</span>
-                {post.data.project && <span class="pill cyan">{post.data.project}</span>}
-                <span class="pill">{post.data.readMin ?? '-'} min</span>
-              </div>
-              <h2>{post.data.title}</h2>
-              <p class="text-secondary">{post.data.description}</p>
-            </div>
-          </a>
+  <section class="blog-board">
+    <div class="blog-controls">
+      <div class="filter-bar" aria-label="Post categories">
+        {categories.map((category, index) => (
+          <button
+            type="button"
+            class:list={['filter-button', { active: index === 0 }]}
+            data-filter={category}
+            aria-pressed={index === 0 ? 'true' : 'false'}
+          >
+            <span>{category}</span>
+            <span class="filter-count">{countFor(category)}</span>
+          </button>
         ))}
-      </section>
+      </div>
 
-      <p class="empty-state text-secondary" data-empty-state hidden>No posts in this category yet.</p>
-    </>
-  )}
+      <label class="search-box" aria-label="Search posts">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="11" cy="11" r="7"></circle>
+          <path d="m16.5 16.5 4 4"></path>
+        </svg>
+        <input type="search" placeholder="Search ..." data-search-input />
+      </label>
+    </div>
+
+    {posts.length === 0 ? (
+      <section class="empty-state">
+        <p>No posts yet.</p>
+      </section>
+    ) : (
+      <>
+        <section class="story-grid" aria-label="All posts">
+          {decoratedPosts.map(({ post, visual, isFeature, searchText }) => (
+            <a
+              href={`/blog/${post.id}/`}
+              class:list={['story-card', visual, { feature: isFeature }]}
+              data-post-card
+              data-category={post.data.category}
+              data-search={searchText}
+            >
+              <span class="card-category">{post.data.category}</span>
+              <div class="visual-layer" aria-hidden="true">
+                <span class="visual-chip chip-one"></span>
+                <span class="visual-chip chip-two"></span>
+                <span class="visual-chip chip-three"></span>
+              </div>
+              <div class="card-content">
+                <h2>{post.data.title}</h2>
+                <div class="card-meta">
+                  <span>{formatDate(post.data.pubDate)}</span>
+                  <span class="meta-divider">|</span>
+                  <span>{post.data.readMin ?? '-'} Min Read</span>
+                  {post.data.project && (
+                    <>
+                      <span class="meta-divider">|</span>
+                      <span>{post.data.project}</span>
+                    </>
+                  )}
+                </div>
+              </div>
+            </a>
+          ))}
+        </section>
+
+        <p class="empty-state" data-empty-state hidden>No matching posts.</p>
+      </>
+    )}
+  </section>
 
   <script>
     const buttons = Array.from(document.querySelectorAll('[data-filter]'));
     const cards = Array.from(document.querySelectorAll('[data-post-card]'));
     const emptyState = document.querySelector('[data-empty-state]');
+    const searchInput = document.querySelector('[data-search-input]');
+    let currentFilter = 'All';
+
+    function applyFilters() {
+      const query = searchInput instanceof HTMLInputElement
+        ? searchInput.value.trim().toLocaleLowerCase()
+        : '';
+      let visibleCount = 0;
+
+      cards.forEach((card) => {
+        const category = card.getAttribute('data-category');
+        const searchText = card.getAttribute('data-search') ?? '';
+        const categoryMatch = currentFilter === 'All' || category === currentFilter;
+        const searchMatch = query.length === 0 || searchText.includes(query);
+        const isVisible = categoryMatch && searchMatch;
+
+        card.toggleAttribute('hidden', !isVisible);
+        if (isVisible) visibleCount += 1;
+      });
+
+      if (emptyState) {
+        emptyState.toggleAttribute('hidden', visibleCount !== 0);
+      }
+    }
 
     buttons.forEach((button) => {
       button.addEventListener('click', () => {
-        const filter = button.getAttribute('data-filter');
-        let visibleCount = 0;
+        currentFilter = button.getAttribute('data-filter') ?? 'All';
 
         buttons.forEach((item) => {
           const isActive = item === button;
@@ -106,70 +139,32 @@ function countFor(category: string) {
           item.setAttribute('aria-pressed', String(isActive));
         });
 
-        cards.forEach((card) => {
-          const category = card.getAttribute('data-category');
-          const isVisible = filter === 'All' || category === filter;
-          card.toggleAttribute('hidden', !isVisible);
-          if (isVisible) visibleCount += 1;
-        });
-
-        if (emptyState) {
-          emptyState.toggleAttribute('hidden', visibleCount !== 0);
-        }
+        applyFilters();
       });
     });
+
+    searchInput?.addEventListener('input', applyFilters);
   </script>
 </BaseLayout>
 
 <style>
-  .page-hero {
+  .blog-board {
+    padding: 0 0 34px;
+  }
+
+  .blog-controls {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 220px;
-    gap: 24px;
-    align-items: end;
-    margin: 56px 0 28px;
-  }
-
-  .eyebrow {
-    margin-bottom: 12px;
-    color: var(--color-accent-orange);
-    font-size: 13px;
-    text-transform: uppercase;
-  }
-
-  .page-hero h1 {
-    max-width: 880px;
-    font-size: 44px;
-  }
-
-  .hero-copy {
-    max-width: 760px;
-    margin-top: 18px;
-    font-size: 17px;
-  }
-
-  .hero-count {
-    padding: 22px;
-  }
-
-  .hero-count span {
-    display: block;
-    color: var(--color-signal-cyan);
-    font-size: 42px;
-    line-height: 1;
-  }
-
-  .hero-count p {
-    margin-top: 10px;
-    font-size: 13px;
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 430px);
+    gap: 28px;
+    align-items: center;
+    margin: 0 0 28px;
   }
 
   .filter-bar {
     display: flex;
-    gap: 8px;
+    gap: 10px;
     overflow-x: auto;
-    padding: 14px 0 18px;
-    margin-bottom: 14px;
+    padding: 8px 0;
     scrollbar-width: none;
   }
 
@@ -182,124 +177,335 @@ function countFor(category: string) {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    padding: 9px 10px;
+    min-height: 48px;
+    padding: 0 18px;
     border: 1px solid var(--color-muted-ash);
-    border-radius: 8px;
-    background: transparent;
-    color: var(--color-dim-gray);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.64);
+    color: var(--color-ink-soft);
     font: inherit;
-    font-size: 13px;
+    font-size: 15px;
+    font-weight: 650;
     cursor: pointer;
+    box-shadow: 0 10px 24px rgba(24, 25, 29, 0.04);
+    transition: background 160ms ease, color 160ms ease, transform 160ms ease, border-color 160ms ease;
   }
 
-  .filter-button:hover,
+  .filter-button:hover {
+    transform: translateY(-1px);
+    border-color: #cfd2d9;
+  }
+
   .filter-button.active {
-    color: var(--color-midnight-oil);
-    border-color: var(--color-accent-orange);
-    background: var(--color-accent-orange);
+    color: #ffffff;
+    border-color: var(--color-midnight-oil);
+    background: var(--color-midnight-oil);
   }
 
   .filter-count {
-    opacity: 0.75;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 22px;
+    min-height: 22px;
+    padding: 0 7px;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.06);
+    font-size: 12px;
   }
 
-  .featured-section {
-    margin: 20px 0 18px;
+  .filter-button.active .filter-count {
+    background: rgba(255, 255, 255, 0.16);
   }
 
-  .featured-card {
+  .search-box {
+    min-height: 58px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 0 22px;
+    border-radius: 999px;
+    background: #e7e7e9;
+    color: var(--color-dim-gray);
+  }
+
+  .search-box svg {
+    flex: 0 0 auto;
+    width: 24px;
+    height: 24px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .search-box input {
+    width: 100%;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: var(--color-midnight-oil);
+    font: inherit;
+    font-size: 17px;
+  }
+
+  .search-box input::placeholder {
+    color: #a3a4aa;
+  }
+
+  .story-grid {
     display: grid;
-    gap: 18px;
-    min-height: 260px;
-    padding: 28px;
-    border-bottom: 1px solid var(--color-muted-ash);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-auto-rows: minmax(286px, 1fr);
+    gap: 22px;
   }
 
-  .featured-card:hover {
-    border-color: var(--color-accent-orange);
-    background: var(--color-panel-soft);
+  .story-card {
+    position: relative;
+    min-height: 286px;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+    border: 0;
+    border-radius: 24px;
+    color: #ffffff;
+    background:
+      linear-gradient(180deg, rgba(15, 18, 26, 0.06), rgba(5, 6, 9, 0.72)),
+      var(--visual-base);
+    box-shadow: 0 22px 48px rgba(24, 25, 29, 0.12);
+    isolation: isolate;
+    transition: transform 180ms ease, box-shadow 180ms ease;
   }
 
-  .featured-meta,
-  .featured-footer,
-  .post-tags {
+  .story-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 30px 68px rgba(24, 25, 29, 0.18);
+  }
+
+  .story-card.feature {
+    grid-column: span 2;
+    grid-row: span 2;
+    min-height: 594px;
+  }
+
+  .story-grid .story-card:only-child {
+    grid-column: 1 / -1;
+  }
+
+  .story-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    background:
+      radial-gradient(circle at 22% 18%, rgba(255, 255, 255, 0.28), transparent 24%),
+      linear-gradient(125deg, rgba(255, 255, 255, 0.12), transparent 36%),
+      var(--visual-base);
+    transform: scale(1.02);
+  }
+
+  .story-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      linear-gradient(180deg, transparent 25%, rgba(0, 0, 0, 0.42) 58%, rgba(0, 0, 0, 0.74) 100%),
+      radial-gradient(circle at 70% 84%, rgba(49, 88, 245, 0.42), transparent 28%);
+  }
+
+  .visual-ai {
+    --visual-base:
+      linear-gradient(135deg, #3458ff 0%, #18243d 44%, #07090f 100%);
+  }
+
+  .visual-workflow {
+    --visual-base:
+      linear-gradient(135deg, #16a879 0%, #14373d 42%, #080c10 100%);
+  }
+
+  .visual-cad {
+    --visual-base:
+      linear-gradient(135deg, #13151d 0%, #365dd8 46%, #f1a33a 100%);
+  }
+
+  .visual-sun {
+    --visual-base:
+      linear-gradient(135deg, #ffbf48 0%, #df5c32 44%, #202126 100%);
+  }
+
+  .visual-rain {
+    --visual-base:
+      linear-gradient(135deg, #7cc7ff 0%, #3158f5 48%, #111827 100%);
+  }
+
+  .visual-system {
+    --visual-base:
+      linear-gradient(135deg, #7166ff 0%, #243048 46%, #08090f 100%);
+  }
+
+  .card-category {
+    position: absolute;
+    top: 22px;
+    left: 22px;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    min-height: 32px;
+    padding: 0 13px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.22);
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 650;
+    backdrop-filter: blur(16px);
+  }
+
+  .visual-layer {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+  }
+
+  .visual-layer::before {
+    content: "";
+    position: absolute;
+    inset: 18% -10% auto 42%;
+    height: 36%;
+    border: 1px solid rgba(255, 255, 255, 0.24);
+    border-radius: 32px;
+    transform: rotate(-12deg);
+  }
+
+  .visual-layer::after {
+    content: "";
+    position: absolute;
+    right: 8%;
+    top: 16%;
+    width: 34%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.34), transparent 62%);
+    filter: blur(2px);
+  }
+
+  .visual-chip {
+    position: absolute;
+    display: block;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  .chip-one {
+    width: 44%;
+    height: 10px;
+    top: 24%;
+    left: 12%;
+    transform: rotate(-8deg);
+  }
+
+  .chip-two {
+    width: 30%;
+    height: 10px;
+    top: 34%;
+    left: 20%;
+    transform: rotate(-8deg);
+  }
+
+  .chip-three {
+    width: 54%;
+    height: 10px;
+    top: 44%;
+    left: 8%;
+    transform: rotate(-8deg);
+  }
+
+  .card-content {
+    width: 100%;
+    display: grid;
+    gap: 16px;
+    padding: 30px;
+  }
+
+  .card-content h2 {
+    max-width: 760px;
+    color: #ffffff;
+    font-size: clamp(24px, 2.2vw, 36px);
+    line-height: 1.08;
+    text-wrap: balance;
+  }
+
+  .story-card:not(.feature) .card-content h2 {
+    font-size: clamp(22px, 1.8vw, 28px);
+  }
+
+  .card-meta {
     display: flex;
     flex-wrap: wrap;
+    gap: 9px;
     align-items: center;
-    gap: 10px;
-    color: var(--color-dim-gray);
-    font-size: 13px;
+    color: rgba(255, 255, 255, 0.76);
+    font-size: 15px;
+    font-weight: 650;
   }
 
-  .featured-card h2 {
-    max-width: 880px;
-    font-size: 30px;
-  }
-
-  .featured-footer {
-    justify-content: space-between;
-  }
-
-  .post-list {
-    display: grid;
-    gap: 12px;
-    margin-top: 18px;
-  }
-
-  .post-row {
-    display: grid;
-    grid-template-columns: 140px minmax(0, 1fr);
-    gap: 24px;
-    padding: 18px 0;
-    border-top: 1px solid var(--color-muted-ash);
-    border-bottom: none;
-  }
-
-  .post-row:hover {
-    border-top-color: var(--color-signal-cyan);
-  }
-
-  .post-date {
-    color: var(--color-dim-gray);
-    font-size: 13px;
-  }
-
-  .post-main {
-    display: grid;
-    gap: 10px;
-  }
-
-  .post-main h2 {
-    font-size: 20px;
+  .meta-divider {
+    color: rgba(255, 255, 255, 0.42);
   }
 
   .empty-state {
-    margin-top: 28px;
-    padding: 22px;
+    margin-top: 24px;
+    padding: 24px;
     border: 1px solid var(--color-muted-ash);
-    border-radius: 8px;
+    border-radius: 22px;
+    color: var(--color-dim-gray);
+    background: #ffffff;
   }
 
   [hidden] {
     display: none !important;
   }
 
-  @media (max-width: 780px) {
-    .page-hero {
+  @media (max-width: 1100px) {
+    .blog-controls {
       grid-template-columns: 1fr;
+      gap: 14px;
     }
 
-    .page-hero h1 {
-      font-size: 34px;
+    .story-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
+  }
 
-    .hero-count {
-      max-width: 220px;
-    }
-
-    .post-row {
+  @media (max-width: 720px) {
+    .story-grid {
       grid-template-columns: 1fr;
-      gap: 10px;
+      grid-auto-rows: auto;
+      gap: 16px;
+    }
+
+    .story-card,
+    .story-card.feature,
+    .story-grid .story-card:only-child {
+      grid-column: auto;
+      grid-row: auto;
+      min-height: 360px;
+    }
+
+    .filter-button {
+      min-height: 44px;
+      padding: 0 14px;
+      font-size: 14px;
+    }
+
+    .search-box {
+      min-height: 52px;
+    }
+
+    .card-content {
+      padding: 24px;
     }
   }
 </style>

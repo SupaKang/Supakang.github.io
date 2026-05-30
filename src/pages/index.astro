@@ -128,9 +128,9 @@ const focusAreas = [
   .hero {
     display: grid;
     grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.65fr);
-    gap: 24px;
+    gap: 30px;
     align-items: stretch;
-    margin: 56px 0 64px;
+    margin: 36px 0 62px;
   }
 
   .hero-copy {
@@ -138,19 +138,21 @@ const focusAreas = [
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    padding: 32px 0;
+    padding: 36px 0;
   }
 
   .eyebrow {
     margin-bottom: 12px;
-    color: var(--color-accent-orange);
+    color: var(--color-signal-cyan);
     font-size: 13px;
+    font-weight: 750;
     text-transform: uppercase;
   }
 
   .hero h1 {
     max-width: 860px;
-    font-size: 52px;
+    font-size: clamp(42px, 5vw, 76px);
+    letter-spacing: 0;
   }
 
   .hero-lede {
@@ -167,15 +169,50 @@ const focusAreas = [
   }
 
   .hero-panel {
-    padding: 24px;
+    position: relative;
+    overflow: hidden;
+    min-height: 430px;
+    padding: 28px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    color: #ffffff;
+    border: 0;
+    background:
+      linear-gradient(180deg, rgba(20, 22, 30, 0.06), rgba(5, 7, 12, 0.72)),
+      radial-gradient(circle at 18% 18%, rgba(255, 255, 255, 0.42), transparent 19%),
+      linear-gradient(135deg, #3158f5 0%, #18253e 46%, #07090f 100%);
+    box-shadow: 0 26px 58px rgba(24, 25, 29, 0.15);
+    isolation: isolate;
+  }
+
+  .hero-panel::before {
+    content: "";
+    position: absolute;
+    inset: 20% -14% auto 36%;
+    height: 34%;
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    border-radius: 34px;
+    transform: rotate(-13deg);
+    z-index: -1;
+  }
+
+  .hero-panel::after {
+    content: "";
+    position: absolute;
+    right: 10%;
+    top: 14%;
+    width: 38%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.36), transparent 62%);
+    z-index: -1;
   }
 
   .panel-kicker {
-    color: var(--color-signal-cyan);
+    color: rgba(255, 255, 255, 0.72);
     font-size: 13px;
+    font-weight: 750;
     text-transform: uppercase;
   }
 
@@ -193,9 +230,10 @@ const focusAreas = [
 
   .focus-row {
     padding: 14px;
-    border: 1px solid var(--color-muted-ash);
-    border-radius: 8px;
-    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(12px);
   }
 
   .focus-label,
@@ -204,13 +242,13 @@ const focusAreas = [
   }
 
   .focus-label {
-    color: var(--color-terrain-green);
+    color: #b8ffdc;
     font-size: 13px;
   }
 
   .focus-value {
     margin-top: 6px;
-    color: var(--color-ghost-white);
+    color: #ffffff;
     font-size: 14px;
   }
 
@@ -228,6 +266,7 @@ const focusAreas = [
 
   .section-link {
     color: var(--color-signal-cyan);
+    font-weight: 750;
     font-size: 14px;
   }
 
@@ -254,8 +293,10 @@ const focusAreas = [
 
   .product-card:hover,
   .post-card:hover {
-    border-color: var(--color-accent-orange);
-    background: var(--color-panel-soft);
+    transform: translateY(-3px);
+    border-color: rgba(49, 88, 245, 0.28);
+    background: #ffffff;
+    box-shadow: 0 26px 54px rgba(24, 25, 29, 0.1);
   }
 
   .product-index {
@@ -272,6 +313,7 @@ const focusAreas = [
   .impact {
     margin-top: auto;
     color: var(--color-terrain-green);
+    font-weight: 700;
     font-size: 14px;
   }
 
