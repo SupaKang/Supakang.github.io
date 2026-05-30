@@ -1,123 +1,433 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-const bio = '1인 운영자, FE 중심 풀스택. GIS·수문학 도메인 + AI 도구 협업. (사용자 bio 입력 대기 — Phase 1 dry-run 중 update)';
+const contactLinks = [
+  { label: 'Email', value: 'seankangster@gmail.com', href: 'mailto:seankangster@gmail.com' },
+  { label: 'X', value: '@supakng1996', href: 'https://twitter.com/supakng1996' },
+  { label: 'LinkedIn', value: 'Sunku Kang', href: 'https://www.linkedin.com/in/sunku-kang-7b549927b/' },
+  { label: 'GitHub', value: 'SupaKang', href: 'https://github.com/SupaKang' },
+];
+
+const orchestration = [
+  'Claude와 Codex를 활용한 시스템 설계',
+  '코드 생성, 리팩터링, 기능 구현',
+  '테스트 계획과 검증 루프',
+  '문서화와 기술 글쓰기',
+  '코드 리뷰와 리스크 점검',
+  '기획, 구현, 리뷰, 검증을 위한 멀티 에이전트 오케스트레이션',
+  '역할과 모델을 나누는 멀티 AI 오케스트레이션',
+];
+
+const education = [
+  {
+    school: '연세대학교 정보대학원',
+    degree: '정보시스템학 석사',
+    period: '2022 - 2025',
+    grade: '3.87 / 4.3',
+    courses: 'IoT 서비스플랫폼, IoT 애널리틱 & AI, 인공지능기반 사물인터넷 최적화, IT 기업가정신과 IoT 혁신',
+  },
+  {
+    school: '학점은행제',
+    degree: '정보통신공학 학사',
+    period: '2020 - 2021',
+    grade: '3.8 / 4.5',
+    courses: 'C언어, 정보통신개론, 마이크로프로세서 I, 네트워크 I, 자료구조',
+  },
+  {
+    school: '한세대학교',
+    degree: '실내건축디자인 중퇴',
+    period: '2016 - 2020',
+    grade: '3.3 / 4.5',
+    courses: '가구디자인, 실내디자인제도, 3D컴퓨터응용디자인, 하이싸이클링디자인',
+  },
+];
 
 const career = [
-  { period: 'YYYY-MM ~ 현재', role: '(placeholder — 사용자 경력 입력 대기)', company: '' },
+  {
+    company: '(주)한국건설환경',
+    role: '연구원',
+    period: '2025 - 현재',
+    summary: '자동화 프로그램 개발 및 AI 내재화 연구',
+  },
+  {
+    company: 'Oddloop',
+    role: '프리랜서',
+    period: '2018 - 현재',
+    summary: '홈페이지 개발 및 디자인 용역업무 진행',
+  },
 ];
 
-const stacks = [
-  { group: 'Frontend', items: ['React 19', 'TypeScript', 'Vite', 'Tailwind CSS', 'Zustand', 'Astro'] },
-  { group: 'Backend', items: ['Python 3.11', 'FastAPI', 'Pydantic v2', 'NumPy/SciPy/Pandas'] },
-  { group: 'GIS / 수문학', items: ['PostGIS', 'GeoServer', 'MapLibre/deck.gl', 'SWMM', 'EPANET', 'PySwMM'] },
-  { group: 'Infra / DevOps', items: ['Docker', 'GitHub Actions', 'Vercel', 'Render/GCP', 'Firebase'] },
-  { group: 'AI / Tools', items: ['Claude Code (Opus 4.7)', 'Anthropic Notion MCP', 'OpenAI', 'Cursor'] },
-  { group: '(placeholder)', items: ['사용자 입력 후 update'] },
+const briefs = [
+  { title: '디자이너', line: '시선에 흐름을 담아요' },
+  { title: '기획자', line: '문제의 핵심을 짚어요' },
+  { title: '개발자', line: '경험을 코딩해요' },
+  { title: '스타트업', line: '협업 애호가에요' },
+  { title: '대학원', line: '공부를 오래했어요' },
+  { title: '발표자료', line: '뭐든 잘 만들어요' },
 ];
 ---
-<BaseLayout title="About | supablog" description="Sean Kang 자기 소개 — 경력, 기술 스택, 관심사">
-  <section class="section">
-    <h1>About</h1>
-    <div class="card-content about-info">
-      <p class="mt-16">{bio}</p>
+<BaseLayout
+  title="About | SupaKang"
+  description="Sunku Kang, AI-native product builder profile."
+>
+  <section class="about-hero">
+    <div class="hero-copy">
+      <div class="eyebrow">AI-Native Product Builder</div>
+      <h1>실용적인 소프트웨어를 AI와 함께 설계하고 구현합니다.</h1>
+      <p>
+        AI를 보조 도구가 아니라 엔지니어링 시스템의 일부로 사용하며,
+        multi-agent AI workflow를 기반으로 기획부터 코드 산출물까지 이어지는 개발 흐름을 만듭니다.
+      </p>
+    </div>
+
+    <aside class="contact-panel" aria-label="Contact">
+      <h2>Contact</h2>
+      <div class="contact-grid">
+        {contactLinks.map(link => (
+          <a href={link.href} class="contact-link" target="_blank" rel="noopener">
+            <span>{link.label}</span>
+            <strong>{link.value}</strong>
+          </a>
+        ))}
+      </div>
+    </aside>
+  </section>
+
+  <section class="section orchestration-section">
+    <div class="section-heading">
+      <span>AI Orchestration</span>
+      <h2>AI를 엔지니어링 시스템의 일부로 다룹니다.</h2>
+    </div>
+
+    <div class="orchestration-grid">
+      {orchestration.map(item => (
+        <div class="capability-card">{item}</div>
+      ))}
+    </div>
+  </section>
+
+  <section class="section profile-section">
+    <div class="profile-card">
+      <p>
+        인테리어 디자인을 전공한 뒤 웹과 앱 디자인으로 영역을 확장했고,
+        스타트업에서 실제 프로토타입 제작까지 경험했습니다.
+        이후 대학원 연구실에서 풀타임 연구원으로 3년 이상 근무하며 스마트시티 국가 R&amp;D 프로젝트에 참여했고,
+        사용자 중심의 서비스 기획부터 데이터 기반 문제 해결, 시민 대상 서비스 제작까지 폭넓은 실무 경험을 쌓았습니다.
+      </p>
+      <p>
+        특히 시민 참여 테스트베드형 프로젝트를 기획하고 운영하며 다양한 이해관계자와 협업했고,
+        현장의 문제를 서비스로 연결하는 과정에서 사용자 경험과 실질적인 구현 가능성을 함께 고민해왔습니다.
+      </p>
+      <p>
+        디자인 툴은 물론 직접 코딩을 통해 화면을 구현할 수 있는 실행력이 강점입니다.
+        최근에는 문제를 정의하고 구조화한 뒤, AI 멀티 에이전트 파이프라인을 직접 구축하여
+        기획부터 최종 코드 산출물에 이르는 E2E 프로세스를 자동화하고 효율화하는 작업방식을 이어가고 있습니다.
+      </p>
     </div>
   </section>
 
   <section class="section">
-    <h2 class="section-title">Career</h2>
-    <div class="career-list">
-      {career.map(c => (
-        <div class="career-item">
-          <div class="text-secondary">{c.period}</div>
-          <div class="mt-8">{c.role}</div>
-          {c.company && <div class="text-secondary mt-8">{c.company}</div>}
-        </div>
+    <div class="section-heading">
+      <span>Education</span>
+      <h2>학력 및 교육 사항</h2>
+    </div>
+
+    <div class="info-grid">
+      {education.map(item => (
+        <article class="info-card">
+          <div class="card-top">
+            <span>{item.period}</span>
+            <span>GPA {item.grade}</span>
+          </div>
+          <h3>{item.school}</h3>
+          <p class="role">{item.degree}</p>
+          <p class="detail">{item.courses}</p>
+        </article>
       ))}
     </div>
   </section>
 
   <section class="section">
-    <h2 class="section-title">Stack</h2>
-    <div class="stack-grid">
-      {stacks.map(s => (
-        <div class="stack-card">
-          <div class="text-secondary stack-group">{s.group}</div>
-          <div class="stack-items mt-8">
-            {s.items.map(item => <span class="stack-tag">{item}</span>)}
+    <div class="section-heading">
+      <span>Career</span>
+      <h2>경력</h2>
+    </div>
+
+    <div class="info-grid two-column">
+      {career.map(item => (
+        <article class="info-card">
+          <div class="card-top">
+            <span>{item.period}</span>
           </div>
-        </div>
+          <h3>{item.company}</h3>
+          <p class="role">{item.role}</p>
+          <p class="detail">{item.summary}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-heading">
+      <span>Career Brief</span>
+      <h2>경험의 축</h2>
+    </div>
+
+    <div class="brief-grid">
+      {briefs.map(item => (
+        <article class="brief-card">
+          <h3>{item.title}</h3>
+          <p>{item.line}</p>
+        </article>
       ))}
     </div>
   </section>
 </BaseLayout>
 
 <style>
-  .section {
-    margin: 48px 0;
+  .about-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(300px, 410px);
+    gap: 28px;
+    align-items: stretch;
+    margin: 22px 0 54px;
   }
-  h1 {
-    font-size: clamp(36px, 4.2vw, 58px);
+
+  .hero-copy {
+    min-height: 420px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 34px 0;
   }
-  .section-title {
-    font-size: 14px;
-    margin-bottom: 16px;
+
+  .eyebrow,
+  .section-heading span {
     color: var(--color-signal-cyan);
+    font-size: 13px;
+    font-weight: 800;
     text-transform: uppercase;
-    font-weight: 750;
   }
-  .about-info {
-    padding: 26px;
-    margin-top: 16px;
+
+  h1 {
+    max-width: 920px;
+    margin-top: 14px;
+    font-size: clamp(40px, 5vw, 72px);
+    line-height: 1.03;
+  }
+
+  .hero-copy p {
+    max-width: 760px;
+    margin-top: 22px;
+    color: var(--color-dim-gray);
+    font-size: 18px;
+    line-height: 1.75;
+  }
+
+  .contact-panel,
+  .profile-card,
+  .info-card,
+  .brief-card,
+  .capability-card {
     border: 1px solid var(--color-muted-ash);
-    border-radius: 22px;
     background: #ffffff;
     box-shadow: 0 18px 44px rgba(24, 25, 29, 0.06);
   }
-  .career-list {
+
+  .contact-panel {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    justify-content: space-between;
+    padding: 28px;
+    border-radius: 28px;
   }
-  .career-item {
-    padding: 26px;
-    border: 1px solid var(--color-muted-ash);
-    border-radius: 22px;
-    background: #ffffff;
-    box-shadow: 0 14px 36px rgba(24, 25, 29, 0.05);
+
+  .contact-panel h2 {
+    font-size: 24px;
   }
-  .stack-grid {
+
+  .contact-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-top: 32px;
+  }
+
+  .contact-link {
+    display: grid;
+    gap: 6px;
+    min-height: 78px;
+    padding: 16px;
+    border: 1px solid var(--color-muted-ash);
+    border-radius: 18px;
+    background: var(--color-shell);
+  }
+
+  .contact-link span {
+    color: var(--color-dim-gray);
+    font-size: 13px;
+    font-weight: 750;
+  }
+
+  .contact-link strong {
+    color: var(--color-midnight-oil);
+    font-size: 15px;
+    word-break: break-word;
+  }
+
+  .section {
+    margin: 58px 0;
+  }
+
+  .section-heading {
+    display: grid;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  .section-heading h2 {
+    font-size: clamp(26px, 3vw, 38px);
+  }
+
+  .orchestration-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 16px;
   }
-  .stack-card {
-    padding: 26px;
-    border: 1px solid var(--color-muted-ash);
+
+  .capability-card {
+    min-height: 128px;
+    display: flex;
+    align-items: flex-end;
+    padding: 20px;
     border-radius: 22px;
-    background: #ffffff;
-    box-shadow: 0 14px 36px rgba(24, 25, 29, 0.05);
+    color: var(--color-midnight-oil);
+    font-weight: 750;
+    line-height: 1.45;
   }
-  .stack-group {
-    font-size: 14px;
+
+  .profile-card {
+    display: grid;
+    gap: 18px;
+    padding: 30px;
+    border-radius: 28px;
+    color: var(--color-ink-soft);
+    font-size: 17px;
+    line-height: 1.85;
   }
-  .stack-items {
+
+  .profile-card p {
+    margin: 0;
+  }
+
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .info-grid.two-column {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .info-card {
+    display: grid;
+    gap: 14px;
+    min-height: 280px;
+    padding: 24px;
+    border-radius: 24px;
+  }
+
+  .card-top {
     display: flex;
     flex-wrap: wrap;
-    gap: 6px;
-  }
-  .stack-tag {
-    display: inline-block;
-    padding: 5px 8px;
-    background: var(--color-blue-soft);
+    justify-content: space-between;
+    gap: 10px;
     color: var(--color-signal-cyan);
-    border-radius: 999px;
-    font-size: 14px;
+    font-size: 13px;
+    font-weight: 800;
   }
-  .text-secondary { color: var(--color-dim-gray); }
-  .mt-8 { margin-top: 8px; }
-  .mt-16 { margin-top: 16px; }
-  @media (max-width: 640px) {
-    .stack-grid { grid-template-columns: 1fr; }
+
+  .info-card h3 {
+    font-size: 22px;
+  }
+
+  .role {
+    color: var(--color-midnight-oil);
+    font-weight: 800;
+  }
+
+  .detail {
+    color: var(--color-dim-gray);
+    line-height: 1.7;
+  }
+
+  .brief-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .brief-card {
+    min-height: 150px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 22px;
+    border-radius: 24px;
+  }
+
+  .brief-card h3 {
+    font-size: 24px;
+  }
+
+  .brief-card p {
+    color: var(--color-dim-gray);
+    font-size: 15px;
+  }
+
+  @media (max-width: 1100px) {
+    .about-hero,
+    .info-grid,
+    .info-grid.two-column,
+    .brief-grid,
+    .orchestration-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .hero-copy {
+      grid-column: 1 / -1;
+      min-height: 320px;
+    }
+  }
+
+  @media (max-width: 720px) {
+    .about-hero,
+    .info-grid,
+    .info-grid.two-column,
+    .brief-grid,
+    .orchestration-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .hero-copy {
+      min-height: 260px;
+      padding: 18px 0;
+    }
+
+    h1 {
+      font-size: 34px;
+    }
+
+    .hero-copy p,
+    .profile-card {
+      font-size: 16px;
+    }
+
+    .info-card,
+    .capability-card,
+    .brief-card {
+      min-height: 0;
+    }
   }
 </style>
