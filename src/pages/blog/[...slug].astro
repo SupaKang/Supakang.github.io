@@ -13,110 +13,336 @@ export async function getStaticPaths() {
 const { post } = Astro.props;
 const { Content } = await render(post);
 const { data } = post;
+
+const allPosts = (await getCollection('blog'))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+const currentIndex = allPosts.findIndex(item => item.id === post.id);
+const newerPost = currentIndex > 0 ? allPosts[currentIndex - 1] : undefined;
+const olderPost = currentIndex >= 0 && currentIndex < allPosts.length - 1 ? allPosts[currentIndex + 1] : undefined;
+const relatedPosts = allPosts
+  .filter(item => item.id !== post.id)
+  .filter(item => item.data.category === data.category || (data.project && item.data.project === data.project))
+  .slice(0, 3);
 ---
-<BaseLayout title={`${data.title} | supablog`} description={data.description}>
-  <article class="post">
+<BaseLayout title={`${data.title} | SupaKang`} description={data.description}>
+  <article class="post-shell">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="/blog/">Blog</a>
+      <span>/</span>
+      <span>{data.category}</span>
+    </nav>
+
     <header class="post-header">
       <div class="meta">
         <time datetime={data.pubDate.toISOString()}>{data.pubDate.toISOString().slice(0, 10)}</time>
-        {data.project && <span class="project-tag">{data.project}</span>}
-        <span class="text-secondary">{data.readMin ?? '–'}분 읽기</span>
+        <span class="pill orange">{data.category}</span>
+        {data.project && <span class="pill cyan">{data.project}</span>}
+        <span class="pill">{data.readMin ?? '-'} min read</span>
       </div>
-      <h1 class="title mt-16">{data.title}</h1>
-      <p class="lede text-secondary mt-16">{data.description}</p>
+      <h1>{data.title}</h1>
+      <p class="lede text-secondary">{data.description}</p>
       {data.tags.length > 0 && (
-        <div class="tags mt-16">
-          {data.tags.map(tag => <span class="tag">{tag}</span>)}
+        <div class="tags">
+          {data.tags.map(tag => <span class="pill green">{tag}</span>)}
         </div>
       )}
     </header>
 
-    <div class="content mt-32">
-      <Content />
+    <div class="post-layout">
+      <aside class="post-side" aria-label="Post actions">
+        <a href="/blog/" class="side-link">Back to Blog</a>
+        {data.sourceDevlog && <span class="side-note">Source: {data.sourceDevlog}</span>}
+      </aside>
+
+      <div class="content">
+        <Content />
+      </div>
     </div>
 
     {data.notionUrl && (
-      <footer class="post-footer mt-32">
-        <div class="text-secondary">
-          source devlog: <code>{data.sourceDevlog}</code>
-        </div>
-        <div class="text-secondary mt-8">
-          notion mirror: <a href={data.notionUrl} target="_blank" rel="noopener">{data.notionUrl}</a>
+      <footer class="source-footer">
+        <div>
+          <span class="text-secondary">Notion mirror</span>
+          <a href={data.notionUrl} target="_blank" rel="noopener">{data.notionUrl}</a>
         </div>
       </footer>
+    )}
+
+    <nav class="adjacent-posts" aria-label="Adjacent posts">
+      {olderPost ? (
+        <a href={`/blog/${olderPost.id}/`} class="adjacent-card surface-card">
+          <span class="text-secondary">Previous</span>
+          <strong>{olderPost.data.title}</strong>
+        </a>
+      ) : (
+        <div class="adjacent-card disabled surface-card">
+          <span class="text-secondary">Previous</span>
+          <strong>No older post</strong>
+        </div>
+      )}
+
+      {newerPost ? (
+        <a href={`/blog/${newerPost.id}/`} class="adjacent-card surface-card align-right">
+          <span class="text-secondary">Next</span>
+          <strong>{newerPost.data.title}</strong>
+        </a>
+      ) : (
+        <div class="adjacent-card disabled surface-card align-right">
+          <span class="text-secondary">Next</span>
+          <strong>Latest post</strong>
+        </div>
+      )}
+    </nav>
+
+    {relatedPosts.length > 0 && (
+      <section class="related-section">
+        <div class="section-kicker">Related notes</div>
+        <div class="related-grid">
+          {relatedPosts.map(item => (
+            <a href={`/blog/${item.id}/`} class="related-card surface-card">
+              <span class="pill orange">{item.data.category}</span>
+              <h2>{item.data.title}</h2>
+              <p class="text-secondary">{item.data.description}</p>
+            </a>
+          ))}
+        </div>
+      </section>
     )}
   </article>
 </BaseLayout>
 
 <style>
-  .post {
-    max-width: 720px;
-    margin: 48px auto;
+  .post-shell {
+    max-width: 1120px;
+    margin: 48px auto 72px;
   }
+
+  .breadcrumb {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    color: var(--color-dim-gray);
+    font-size: 13px;
+    margin-bottom: 28px;
+  }
+
+  .breadcrumb a {
+    color: var(--color-signal-cyan);
+  }
+
   .post-header {
-    padding-bottom: 32px;
+    max-width: 860px;
+    padding-bottom: 34px;
     border-bottom: 1px solid var(--color-muted-ash);
   }
-  .meta {
-    display: flex;
-    gap: 16px;
-    align-items: center;
-    font-size: 14px;
-  }
-  .project-tag {
-    padding: 5px 8px;
-    background: var(--color-steel-gray);
-    border-radius: 10px;
-    font-size: 14px;
-  }
-  .title {
-    font-size: 16px;
-    font-weight: 400;
-    line-height: 1.4;
-  }
-  .lede {
-    font-size: 16px;
-    line-height: 1.4;
-  }
+
+  .meta,
   .tags {
     display: flex;
     flex-wrap: wrap;
-    gap: 6px;
+    gap: 8px;
+    align-items: center;
   }
-  .tag {
-    padding: 5px 8px;
-    background: var(--color-steel-gray);
-    border-radius: 10px;
-    font-size: 14px;
+
+  .meta {
     color: var(--color-dim-gray);
+    font-size: 13px;
   }
+
+  .post-header h1 {
+    margin-top: 18px;
+    font-size: 42px;
+  }
+
+  .lede {
+    margin-top: 18px;
+    font-size: 17px;
+  }
+
+  .tags {
+    margin-top: 18px;
+  }
+
+  .post-layout {
+    display: grid;
+    grid-template-columns: 220px minmax(0, 760px);
+    gap: 48px;
+    align-items: start;
+    margin-top: 40px;
+  }
+
+  .post-side {
+    position: sticky;
+    top: 96px;
+    display: grid;
+    gap: 14px;
+    color: var(--color-dim-gray);
+    font-size: 13px;
+  }
+
+  .side-link {
+    width: fit-content;
+    color: var(--color-accent-orange);
+  }
+
+  .side-note {
+    display: block;
+    line-height: 1.5;
+  }
+
   .content {
     font-size: 16px;
-    line-height: 1.4;
+    line-height: 1.75;
   }
+
   .content :global(h2),
   .content :global(h3),
   .content :global(h4) {
-    margin-top: 32px;
-    margin-bottom: 16px;
+    margin-top: 40px;
+    margin-bottom: 14px;
   }
+
+  .content :global(h2) {
+    font-size: 24px;
+    color: var(--color-ghost-white);
+  }
+
+  .content :global(h3) {
+    font-size: 19px;
+    color: var(--color-signal-cyan);
+  }
+
   .content :global(p) {
-    margin: 16px 0;
+    margin: 18px 0;
   }
-  .content :global(pre) {
-    background: var(--color-steel-gray);
-    padding: 19px 26px;
-    border-radius: 10px;
-    overflow-x: auto;
-    margin: 16px 0;
+
+  .content :global(a) {
+    color: var(--color-signal-cyan);
   }
-  .post-footer {
-    padding-top: 32px;
+
+  .content :global(img) {
+    max-width: 100%;
+    border-radius: 8px;
+    border: 1px solid var(--color-muted-ash);
+  }
+
+  .source-footer {
+    margin-top: 44px;
+    padding-top: 20px;
     border-top: 1px solid var(--color-muted-ash);
+    font-size: 13px;
+  }
+
+  .source-footer div {
+    display: grid;
+    gap: 6px;
+  }
+
+  .source-footer a {
+    color: var(--color-signal-cyan);
+    word-break: break-all;
+  }
+
+  .adjacent-posts {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+    margin-top: 44px;
+  }
+
+  .adjacent-card {
+    display: grid;
+    gap: 8px;
+    padding: 18px;
+    border-bottom: 1px solid var(--color-muted-ash);
+  }
+
+  .adjacent-card:hover {
+    border-color: var(--color-accent-orange);
+    background: var(--color-panel-soft);
+  }
+
+  .adjacent-card strong {
+    font-size: 15px;
+    font-weight: 500;
+  }
+
+  .adjacent-card.disabled {
+    opacity: 0.45;
+  }
+
+  .align-right {
+    text-align: right;
+  }
+
+  .related-section {
+    margin-top: 54px;
+  }
+
+  .section-kicker {
+    margin-bottom: 14px;
+    color: var(--color-accent-orange);
+    font-size: 13px;
+    text-transform: uppercase;
+  }
+
+  .related-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .related-card {
+    display: grid;
+    gap: 12px;
+    padding: 18px;
+    border-bottom: 1px solid var(--color-muted-ash);
+  }
+
+  .related-card:hover {
+    border-color: var(--color-signal-cyan);
+    background: var(--color-panel-soft);
+  }
+
+  .related-card h2 {
+    font-size: 17px;
+  }
+
+  .related-card p {
     font-size: 14px;
   }
-  .text-secondary { color: var(--color-dim-gray); }
-  .mt-8 { margin-top: 8px; }
-  .mt-16 { margin-top: 16px; }
-  .mt-32 { margin-top: 32px; }
+
+  @media (max-width: 900px) {
+    .post-layout {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+
+    .post-side {
+      position: static;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+
+    .related-grid,
+    .adjacent-posts {
+      grid-template-columns: 1fr;
+    }
+
+    .align-right {
+      text-align: left;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .post-shell {
+      margin-top: 32px;
+    }
+
+    .post-header h1 {
+      font-size: 30px;
+    }
+  }
 </style>
