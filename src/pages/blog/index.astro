@@ -20,7 +20,6 @@ function formatDate(date: Date) {
 const decoratedPosts = posts.map((post, index) => ({
   post,
   visual: visuals[index % visuals.length],
-  isFeature: index === 0,
   searchText: [
     post.data.title,
     post.data.description,
@@ -63,10 +62,10 @@ const decoratedPosts = posts.map((post, index) => ({
     ) : (
       <>
         <section class="story-grid" aria-label="All posts">
-          {decoratedPosts.map(({ post, visual, isFeature, searchText }) => (
+          {decoratedPosts.map(({ post, visual, searchText }) => (
             <a
               href={`/blog/${post.id}/`}
-              class:list={['story-card', visual, { feature: isFeature }]}
+              class:list={['story-card', visual]}
               data-post-card
               data-category={post.data.category}
               data-search={searchText}
@@ -257,13 +256,13 @@ const decoratedPosts = posts.map((post, index) => ({
   .story-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    grid-auto-rows: minmax(286px, 1fr);
+    grid-auto-rows: minmax(320px, auto);
     gap: 22px;
   }
 
   .story-card {
     position: relative;
-    min-height: 286px;
+    min-height: 320px;
     overflow: hidden;
     display: flex;
     align-items: flex-end;
@@ -281,16 +280,6 @@ const decoratedPosts = posts.map((post, index) => ({
   .story-card:hover {
     transform: translateY(-4px);
     box-shadow: 0 30px 68px rgba(24, 25, 29, 0.18);
-  }
-
-  .story-card.feature {
-    grid-column: span 2;
-    grid-row: span 2;
-    min-height: 594px;
-  }
-
-  .story-grid .story-card:only-child {
-    grid-column: 1 / -1;
   }
 
   .story-card::before {
@@ -432,13 +421,9 @@ const decoratedPosts = posts.map((post, index) => ({
   .card-content h2 {
     max-width: 760px;
     color: #ffffff;
-    font-size: clamp(24px, 2.2vw, 36px);
+    font-size: clamp(22px, 1.9vw, 30px);
     line-height: 1.08;
     text-wrap: balance;
-  }
-
-  .story-card:not(.feature) .card-content h2 {
-    font-size: clamp(22px, 1.8vw, 28px);
   }
 
   .card-meta {
@@ -486,11 +471,7 @@ const decoratedPosts = posts.map((post, index) => ({
       gap: 16px;
     }
 
-    .story-card,
-    .story-card.feature,
-    .story-grid .story-card:only-child {
-      grid-column: auto;
-      grid-row: auto;
+    .story-card {
       min-height: 360px;
     }
 

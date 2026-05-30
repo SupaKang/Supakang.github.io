@@ -1,283 +1,544 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-const internalProjects = [
+const filters = ['All', 'Internal Tools', 'GIS / CAD', 'Public Work', 'Product'];
+
+const projects = [
   {
     slug: 'hourly-rainfall-calculator',
     name: 'Hourly Rainfall Calculator',
-    domain: 'Hydrology / rainfall calculation',
-    problem: 'Rainfall review work depends on repeated data entry, manual calculation steps, and inconsistent review habits.',
-    role: 'Solo internal product developer',
-    stack: ['React', 'TypeScript', 'FastAPI', 'Python'],
-    impact: ['Standardized input flow', 'Reduced manual work', 'Lower human-error risk'],
+    category: 'Internal Tools',
+    meta: 'HRC | React / TypeScript / FastAPI / Python',
+    visual: 'visual-rain',
   },
   {
     slug: 'sunlight-analysis',
     name: 'Sunlight Analysis',
-    domain: 'Sunlight review / GIS / CAD-DXF',
-    problem: 'Analysis data and CAD/GIS inputs need a workflow that is easier to repeat, inspect, and hand off.',
-    role: 'Solo internal product developer',
-    stack: ['React', 'TypeScript', 'GIS', 'CAD/DXF', 'Firebase'],
-    impact: ['Structured analysis workflow', 'Faster input handling', 'Reusable review process'],
+    category: 'GIS / CAD',
+    meta: 'SL | GIS / CAD-DXF / React / Firebase',
+    visual: 'visual-sun',
   },
   {
     slug: 'slope-calculator',
     name: 'Slope Calculator',
-    domain: 'Slope review / engineering calculation',
-    problem: 'Slope-related calculation and review work needs a consistent interface for domain inputs and output checking.',
-    role: 'Solo internal product developer',
-    stack: ['React', 'FastAPI', 'Python', 'Domain logic'],
-    impact: ['Internalized paid-tool workflow', 'Reduced repeated calculation work', 'More consistent review outputs'],
+    category: 'Internal Tools',
+    meta: 'Slope | FastAPI / Python / Domain Logic',
+    visual: 'visual-cad',
   },
-];
-
-const publicProjects = [
   {
+    slug: 'supablog',
     name: 'supablog',
-    href: 'https://supakang.github.io/',
-    desc: 'Personal tech blog and portfolio built with Astro, Tailwind, MDX, and GitHub Pages automation.',
+    category: 'Product',
+    meta: 'Astro / MDX / GitHub Pages',
+    href: '/',
+    visual: 'visual-ai',
   },
   {
+    slug: 'subwayhero',
     name: 'SubwayHero',
+    category: 'Public Work',
+    meta: 'Product Prototype / UX',
     href: 'https://github.com/SupaKang/SubwayHero',
-    desc: 'Design-thinking prototype for secondhand delivery and senior courier matching.',
+    external: true,
+    visual: 'visual-workflow',
   },
   {
+    slug: 'flixkookoo',
     name: 'FlixKooKoo',
+    category: 'Public Work',
+    meta: 'Movie Search · Watchlist',
     href: 'https://github.com/SupaKang/flixkookoo',
-    desc: 'TMDB API movie search and watchlist web app.',
+    external: true,
+    visual: 'visual-system',
   },
   {
+    slug: 'qr-generator',
     name: 'QR Generator',
+    category: 'Public Work',
+    meta: 'Browser Tool / QR',
     href: 'https://github.com/SupaKang/qr-generator',
-    desc: 'Lightweight browser-based QR generator.',
+    external: true,
+    visual: 'visual-lilac',
   },
 ];
+
+function countFor(filter: string) {
+  if (filter === 'All') return projects.length;
+  return projects.filter(project => project.category === filter).length;
+}
 ---
-<BaseLayout title="Projects | SupaKang" description="Internal products and public experiments by SupaKang.">
-  <section class="page-hero">
-    <div class="eyebrow">Project map</div>
-    <h1>Internal tools first. Public experiments second.</h1>
-    <p class="text-secondary hero-copy">
-      The core work is private company software for construction and environmental workflows. Public projects stay here
-      as supporting evidence of UI, product thinking, and web development history.
-    </p>
-  </section>
+<BaseLayout title="Projects | SupaKang" description="Projects by SupaKang.">
+  <section class="project-board">
+    <h1 class="sr-only">Projects</h1>
 
-  <section class="section">
-    <div class="section-header">
-      <div>
-        <div class="eyebrow">Internal products</div>
-        <h2>Company workflow software</h2>
+    <div class="project-controls">
+      <div class="filter-bar" aria-label="Project categories">
+        {filters.map((filter, index) => (
+          <button
+            type="button"
+            class:list={['filter-button', { active: index === 0 }]}
+            data-project-filter={filter}
+            aria-pressed={index === 0 ? 'true' : 'false'}
+          >
+            <span>{filter}</span>
+            <span class="filter-count">{countFor(filter)}</span>
+          </button>
+        ))}
       </div>
-      <span class="pill orange">Private / Internal</span>
+
+      <label class="search-box" aria-label="Search projects">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="11" cy="11" r="7"></circle>
+          <path d="m16.5 16.5 4 4"></path>
+        </svg>
+        <input type="search" placeholder="Search ..." data-project-search />
+      </label>
     </div>
 
-    <div class="internal-grid">
-      {internalProjects.map((project, index) => (
-        <article id={project.slug} class="internal-card surface-card">
-          <div class="card-topline">
-            <span class="project-number">0{index + 1}</span>
-            <span class="pill cyan">{project.domain}</span>
-          </div>
-          <h3>{project.name}</h3>
-          <p class="problem text-secondary">{project.problem}</p>
-
-          <div class="field-group">
-            <span class="field-label">Role</span>
-            <span>{project.role}</span>
-          </div>
-
-          <div class="field-group">
-            <span class="field-label">Stack</span>
-            <div class="pill-list">
-              {project.stack.map(item => <span class="pill">{item}</span>)}
+    <section class="project-grid" aria-label="Project list">
+      {projects.map(project => (
+        project.href ? (
+          <a
+            id={project.slug}
+            href={project.href}
+            class:list={['project-card', project.visual]}
+            data-project-card
+            data-category={project.category}
+            data-search={`${project.name} ${project.category} ${project.meta}`.toLocaleLowerCase()}
+            target={project.external ? '_blank' : undefined}
+            rel={project.external ? 'noopener' : undefined}
+          >
+            <span class="card-category">{project.category}</span>
+            <div class="visual-layer" aria-hidden="true">
+              <span class="visual-chip chip-one"></span>
+              <span class="visual-chip chip-two"></span>
+              <span class="visual-chip chip-three"></span>
             </div>
-          </div>
-
-          <div class="field-group">
-            <span class="field-label">Impact</span>
-            <div class="impact-list">
-              {project.impact.map(item => <span>{item}</span>)}
+            <div class="card-content">
+              <h2>{project.name}</h2>
+              <div class="card-meta">{project.meta}</div>
             </div>
-          </div>
-        </article>
+          </a>
+        ) : (
+          <article
+            id={project.slug}
+            class:list={['project-card', project.visual]}
+            data-project-card
+            data-category={project.category}
+            data-search={`${project.name} ${project.category} ${project.meta}`.toLocaleLowerCase()}
+          >
+            <span class="card-category">{project.category}</span>
+            <div class="visual-layer" aria-hidden="true">
+              <span class="visual-chip chip-one"></span>
+              <span class="visual-chip chip-two"></span>
+              <span class="visual-chip chip-three"></span>
+            </div>
+            <div class="card-content">
+              <h2>{project.name}</h2>
+              <div class="card-meta">{project.meta}</div>
+            </div>
+          </article>
+        )
       ))}
-    </div>
+    </section>
+
+    <p class="empty-state" data-project-empty hidden>No matching projects.</p>
   </section>
 
-  <section class="section">
-    <div class="section-header">
-      <div>
-        <div class="eyebrow">Public work</div>
-        <h2>Open projects and experiments</h2>
-      </div>
-    </div>
+  <script>
+    const buttons = Array.from(document.querySelectorAll('[data-project-filter]'));
+    const cards = Array.from(document.querySelectorAll('[data-project-card]'));
+    const emptyState = document.querySelector('[data-project-empty]');
+    const searchInput = document.querySelector('[data-project-search]');
+    let currentFilter = 'All';
 
-    <div class="public-list">
-      {publicProjects.map(project => (
-        <a href={project.href} class="public-row" target="_blank" rel="noopener">
-          <div>
-            <h3>{project.name}</h3>
-            <p class="text-secondary">{project.desc}</p>
-          </div>
-          <span class="open-label">Open</span>
-        </a>
-      ))}
-    </div>
-  </section>
+    function applyFilters() {
+      const query = searchInput instanceof HTMLInputElement
+        ? searchInput.value.trim().toLocaleLowerCase()
+        : '';
+      let visibleCount = 0;
+
+      cards.forEach((card) => {
+        const category = card.getAttribute('data-category');
+        const searchText = card.getAttribute('data-search') ?? '';
+        const categoryMatch = currentFilter === 'All' || category === currentFilter;
+        const searchMatch = query.length === 0 || searchText.includes(query);
+        const isVisible = categoryMatch && searchMatch;
+
+        card.toggleAttribute('hidden', !isVisible);
+        if (isVisible) visibleCount += 1;
+      });
+
+      if (emptyState) {
+        emptyState.toggleAttribute('hidden', visibleCount !== 0);
+      }
+    }
+
+    buttons.forEach((button) => {
+      button.addEventListener('click', () => {
+        currentFilter = button.getAttribute('data-project-filter') ?? 'All';
+
+        buttons.forEach((item) => {
+          const isActive = item === button;
+          item.classList.toggle('active', isActive);
+          item.setAttribute('aria-pressed', String(isActive));
+        });
+
+        applyFilters();
+      });
+    });
+
+    searchInput?.addEventListener('input', applyFilters);
+  </script>
 </BaseLayout>
 
 <style>
-  .page-hero {
-    margin: 36px 0 48px;
-    max-width: 920px;
+  .project-board {
+    padding: 0 0 34px;
   }
 
-  .eyebrow {
-    margin-bottom: 12px;
-    color: var(--color-signal-cyan);
-    font-size: 13px;
-    font-weight: 750;
-    text-transform: uppercase;
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
   }
 
-  .page-hero h1 {
-    font-size: clamp(36px, 4.4vw, 62px);
+  .project-controls {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 430px);
+    gap: 28px;
+    align-items: center;
+    margin: 0 0 28px;
   }
 
-  .hero-copy {
-    margin-top: 18px;
+  .filter-bar {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding: 8px 0;
+    scrollbar-width: none;
+  }
+
+  .filter-bar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .filter-button {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 48px;
+    padding: 0 18px;
+    border: 1px solid var(--color-muted-ash);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.64);
+    color: var(--color-ink-soft);
+    font: inherit;
+    font-size: 15px;
+    font-weight: 650;
+    cursor: pointer;
+    box-shadow: 0 10px 24px rgba(24, 25, 29, 0.04);
+    transition: background 160ms ease, color 160ms ease, transform 160ms ease, border-color 160ms ease;
+  }
+
+  .filter-button:hover {
+    transform: translateY(-1px);
+    border-color: #cfd2d9;
+  }
+
+  .filter-button.active {
+    color: #ffffff;
+    border-color: var(--color-midnight-oil);
+    background: var(--color-midnight-oil);
+  }
+
+  .filter-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 22px;
+    min-height: 22px;
+    padding: 0 7px;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.06);
+    font-size: 12px;
+  }
+
+  .filter-button.active .filter-count {
+    background: rgba(255, 255, 255, 0.16);
+  }
+
+  .search-box {
+    min-height: 58px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 0 22px;
+    border-radius: 999px;
+    background: #e7e7e9;
+    color: var(--color-dim-gray);
+  }
+
+  .search-box svg {
+    flex: 0 0 auto;
+    width: 24px;
+    height: 24px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .search-box input {
+    width: 100%;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: var(--color-midnight-oil);
+    font: inherit;
     font-size: 17px;
   }
 
-  .section {
-    margin: 64px 0;
+  .search-box input::placeholder {
+    color: #a3a4aa;
   }
 
-  .section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    gap: 20px;
-    margin-bottom: 20px;
-  }
-
-  .internal-grid {
+  .project-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 16px;
+    grid-auto-rows: minmax(320px, auto);
+    gap: 22px;
   }
 
-  .internal-card {
-    display: grid;
-    gap: 18px;
-    padding: 24px;
-    transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
-  }
-
-  .internal-card:hover {
-    transform: translateY(-3px);
-    border-color: rgba(49, 88, 245, 0.28);
-    background: #ffffff;
-    box-shadow: 0 26px 54px rgba(24, 25, 29, 0.1);
-  }
-
-  .card-topline {
+  .project-card {
+    position: relative;
+    min-height: 320px;
+    overflow: hidden;
     display: flex;
-    justify-content: space-between;
+    align-items: flex-end;
+    border: 0;
+    border-radius: 24px;
+    color: #ffffff;
+    background:
+      linear-gradient(180deg, rgba(15, 18, 26, 0.06), rgba(5, 6, 9, 0.72)),
+      var(--visual-base);
+    box-shadow: 0 22px 48px rgba(24, 25, 29, 0.12);
+    isolation: isolate;
+    transition: transform 180ms ease, box-shadow 180ms ease;
+  }
+
+  .project-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 30px 68px rgba(24, 25, 29, 0.18);
+  }
+
+  .project-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    background:
+      radial-gradient(circle at 22% 18%, rgba(255, 255, 255, 0.28), transparent 24%),
+      linear-gradient(125deg, rgba(255, 255, 255, 0.12), transparent 36%),
+      var(--visual-base);
+    transform: scale(1.02);
+  }
+
+  .project-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      linear-gradient(180deg, transparent 25%, rgba(0, 0, 0, 0.42) 58%, rgba(0, 0, 0, 0.74) 100%),
+      radial-gradient(circle at 70% 84%, rgba(49, 88, 245, 0.42), transparent 28%);
+  }
+
+  .visual-ai {
+    --visual-base:
+      linear-gradient(135deg, #3458ff 0%, #18243d 44%, #07090f 100%);
+  }
+
+  .visual-workflow {
+    --visual-base:
+      linear-gradient(135deg, #16a879 0%, #14373d 42%, #080c10 100%);
+  }
+
+  .visual-cad {
+    --visual-base:
+      linear-gradient(135deg, #13151d 0%, #365dd8 46%, #f1a33a 100%);
+  }
+
+  .visual-sun {
+    --visual-base:
+      linear-gradient(135deg, #ffbf48 0%, #df5c32 44%, #202126 100%);
+  }
+
+  .visual-rain {
+    --visual-base:
+      linear-gradient(135deg, #7cc7ff 0%, #3158f5 48%, #111827 100%);
+  }
+
+  .visual-system {
+    --visual-base:
+      linear-gradient(135deg, #7166ff 0%, #243048 46%, #08090f 100%);
+  }
+
+  .visual-lilac {
+    --visual-base:
+      linear-gradient(135deg, #8c7dff 0%, #3158f5 42%, #111827 100%);
+  }
+
+  .card-category {
+    position: absolute;
+    top: 22px;
+    left: 22px;
+    z-index: 2;
+    display: inline-flex;
     align-items: center;
-    gap: 12px;
-  }
-
-  .project-number {
-    color: var(--color-signal-cyan);
-    font-weight: 800;
-    font-size: 13px;
-  }
-
-  .problem {
-    min-height: 96px;
-  }
-
-  .field-group {
-    display: grid;
-    gap: 8px;
-  }
-
-  .field-label {
-    color: var(--color-terrain-green);
-    font-weight: 750;
-    font-size: 13px;
-  }
-
-  .pill-list,
-  .impact-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-
-  .impact-list span {
-    color: var(--color-dim-gray);
+    min-height: 32px;
+    padding: 0 13px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.22);
+    color: #ffffff;
     font-size: 14px;
+    font-weight: 650;
+    backdrop-filter: blur(16px);
   }
 
-  .public-list {
+  .visual-layer {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+  }
+
+  .visual-layer::before {
+    content: "";
+    position: absolute;
+    inset: 18% -10% auto 42%;
+    height: 36%;
+    border: 1px solid rgba(255, 255, 255, 0.24);
+    border-radius: 32px;
+    transform: rotate(-12deg);
+  }
+
+  .visual-layer::after {
+    content: "";
+    position: absolute;
+    right: 8%;
+    top: 16%;
+    width: 34%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.34), transparent 62%);
+    filter: blur(2px);
+  }
+
+  .visual-chip {
+    position: absolute;
+    display: block;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  .chip-one {
+    width: 44%;
+    height: 10px;
+    top: 24%;
+    left: 12%;
+    transform: rotate(-8deg);
+  }
+
+  .chip-two {
+    width: 30%;
+    height: 10px;
+    top: 34%;
+    left: 20%;
+    transform: rotate(-8deg);
+  }
+
+  .chip-three {
+    width: 54%;
+    height: 10px;
+    top: 44%;
+    left: 8%;
+    transform: rotate(-8deg);
+  }
+
+  .card-content {
+    width: 100%;
     display: grid;
-    gap: 10px;
+    gap: 16px;
+    padding: 30px;
   }
 
-  .public-row {
-    display: flex;
-    justify-content: space-between;
-    gap: 24px;
-    padding: 20px 22px;
+  .card-content h2 {
+    max-width: 760px;
+    color: #ffffff;
+    font-size: clamp(22px, 1.9vw, 30px);
+    line-height: 1.08;
+    text-wrap: balance;
+  }
+
+  .card-meta {
+    color: rgba(255, 255, 255, 0.76);
+    font-size: 15px;
+    font-weight: 650;
+  }
+
+  .empty-state {
+    margin-top: 24px;
+    padding: 24px;
     border: 1px solid var(--color-muted-ash);
-    border-radius: 20px;
+    border-radius: 22px;
+    color: var(--color-dim-gray);
     background: #ffffff;
-    box-shadow: 0 14px 36px rgba(24, 25, 29, 0.05);
   }
 
-  .public-row:hover {
-    border-color: rgba(49, 88, 245, 0.28);
-    transform: translateY(-2px);
+  [hidden] {
+    display: none !important;
   }
 
-  .public-row h3 {
-    font-size: 18px;
-  }
-
-  .public-row p {
-    margin-top: 8px;
-  }
-
-  .open-label {
-    flex: 0 0 auto;
-    color: var(--color-signal-cyan);
-    font-weight: 750;
-    font-size: 14px;
-  }
-
-  @media (max-width: 980px) {
-    .internal-grid {
+  @media (max-width: 1100px) {
+    .project-controls {
       grid-template-columns: 1fr;
+      gap: 14px;
     }
 
-    .problem {
-      min-height: 0;
+    .project-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
 
-  @media (max-width: 640px) {
-    .page-hero h1 {
-      font-size: 32px;
+  @media (max-width: 720px) {
+    .project-grid {
+      grid-template-columns: 1fr;
+      grid-auto-rows: auto;
+      gap: 16px;
     }
 
-    .section-header,
-    .public-row {
-      align-items: flex-start;
-      flex-direction: column;
+    .project-card {
+      min-height: 360px;
+    }
+
+    .filter-button {
+      min-height: 44px;
+      padding: 0 14px;
+      font-size: 14px;
+    }
+
+    .search-box {
+      min-height: 52px;
+    }
+
+    .card-content {
+      padding: 24px;
     }
   }
 </style>
