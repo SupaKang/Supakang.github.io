@@ -2,8 +2,8 @@
 const navItems = [
   { href: '/', label: 'Home' },
   { href: '/blog/', label: 'Blog' },
-  { href: '/about/', label: 'About' },
   { href: '/projects/', label: 'Projects' },
+  { href: '/about/', label: 'About' },
   { href: '/contact/', label: 'Contact' },
 ];
 const currentPath = Astro.url.pathname;
@@ -15,71 +15,136 @@ function isActive(href: string) {
 ---
 <header class="site-header">
   <div class="header-row">
-    <div class="left"><span class="text-secondary">Menu_</span></div>
-    <div class="center"><a href="/" class="brand">supablog</a></div>
-    <div class="right"><a href="/contact/">Contact</a></div>
+    <a href="/" class="brand" aria-label="Go to home">
+      <span class="brand-mark">SK</span>
+      <span class="brand-copy">
+        <span class="brand-name">SupaKang</span>
+        <span class="brand-subtitle">AI-native product log</span>
+      </span>
+    </a>
+
+    <nav class="nav-row" aria-label="Primary navigation">
+      {navItems.map(item => (
+        <a
+          href={item.href}
+          class:list={['nav-link', { active: isActive(item.href) }]}
+        >
+          {item.label}
+        </a>
+      ))}
+    </nav>
   </div>
-  <nav class="nav-row">
-    {navItems.map(item => (
-      <a
-        href={item.href}
-        class:list={['nav-link', { active: isActive(item.href) }]}
-      >
-        {item.label}
-      </a>
-    ))}
-  </nav>
 </header>
 
 <style>
   .site-header {
-    border-bottom: 1px solid var(--color-muted-ash);
-    padding: 16px 0;
-    background: var(--color-midnight-oil);
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    border-bottom: 1px solid rgba(52, 59, 73, 0.85);
+    background: rgba(8, 9, 11, 0.92);
+    backdrop-filter: blur(14px);
   }
+
   .header-row {
-    max-width: 1600px;
+    max-width: 1280px;
     margin: 0 auto;
-    padding: 0 26px;
+    padding: 14px 24px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 16px;
+    gap: 24px;
   }
-  .left, .right {
-    flex: 1;
-    font-size: 16px;
-  }
-  .right {
-    text-align: right;
-  }
-  .center {
-    flex: 0;
-  }
+
   .brand {
-    font-size: 16px;
-    color: var(--color-ghost-white);
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
     border-bottom: none;
   }
+
   .brand:hover {
     border-bottom: none;
-    color: var(--color-dim-gray);
   }
-  .nav-row {
-    max-width: 1600px;
-    margin: 16px auto 0;
-    padding: 0 26px;
+
+  .brand-mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border: 1px solid var(--color-accent-orange);
+    border-radius: 8px;
+    color: var(--color-accent-orange);
+    background: rgba(255, 122, 26, 0.08);
+    font-size: 13px;
+    line-height: 1;
+  }
+
+  .brand-copy {
     display: flex;
-    gap: 26px;
-    font-size: 14px;
+    flex-direction: column;
+    gap: 2px;
   }
-  .nav-link {
-    color: var(--color-dim-gray);
-  }
-  .nav-link.active {
+
+  .brand-name {
     color: var(--color-ghost-white);
+    font-size: 15px;
+    line-height: 1.1;
   }
-  .text-secondary {
+
+  .brand-subtitle {
     color: var(--color-dim-gray);
+    font-size: 12px;
+    line-height: 1.1;
+  }
+
+  .nav-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .nav-row::-webkit-scrollbar {
+    display: none;
+  }
+
+  .nav-link {
+    flex: 0 0 auto;
+    padding: 8px 10px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    color: var(--color-dim-gray);
+    font-size: 14px;
+    line-height: 1;
+  }
+
+  .nav-link:hover {
+    color: var(--color-ghost-white);
+    border-color: var(--color-muted-ash);
+    background: var(--color-panel);
+  }
+
+  .nav-link.active {
+    color: var(--color-midnight-oil);
+    border-color: var(--color-accent-orange);
+    background: var(--color-accent-orange);
+  }
+
+  @media (max-width: 720px) {
+    .header-row {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 14px;
+      padding: 14px 18px;
+    }
+
+    .nav-row {
+      width: 100%;
+      padding-bottom: 2px;
+    }
   }
 </style>
