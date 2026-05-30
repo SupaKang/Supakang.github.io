@@ -4,86 +4,302 @@ import { getCollection } from 'astro:content';
 
 const posts = (await getCollection('blog'))
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const featuredPost = posts.find(post => post.data.featured) ?? posts[0];
+const listPosts = featuredPost ? posts.filter(post => post.id !== featuredPost.id) : [];
+
+const categories = ['All', 'AI Workflow', 'Internal Tools', 'Construction Tech', 'GIS / CAD / DXF', 'Build Log', 'Postmortem'];
+
+function countFor(category: string) {
+  if (category === 'All') return posts.length;
+  return posts.filter(post => post.data.category === category).length;
+}
 ---
-<BaseLayout title="Blog | supablog" description="모든 글 목록 — devlog 자동 변환 회고">
-  <section class="section">
-    <h1>Blog</h1>
-    <p class="text-secondary mt-16">{posts.length}개 글 · 최근 게시순</p>
+<BaseLayout title="Blog | SupaKang" description="Build logs, AI workflow notes, and domain software development records.">
+  <section class="page-hero">
+    <div>
+      <div class="eyebrow">Technical log</div>
+      <h1>Build logs for AI-native internal tools.</h1>
+      <p class="text-secondary hero-copy">
+        Notes on AI workflows, construction and environmental software, GIS/CAD data, automation loops,
+        and the messy path from domain work to usable tools.
+      </p>
+    </div>
+    <div class="hero-count surface-card">
+      <span>{posts.length}</span>
+      <p class="text-secondary">published notes</p>
+    </div>
   </section>
 
-  <section class="section">
-    {posts.length === 0 ? (
-      <p class="text-secondary">아직 게시된 글이 없습니다.</p>
-    ) : (
-      <div class="post-list">
-        {posts.map(post => (
-          <a href={`/blog/${post.id}/`} class="post-card">
-            <div class="post-meta">
-              <span class="text-secondary">{post.data.pubDate.toISOString().slice(0, 10)}</span>
-              {post.data.project && <span class="project-tag">{post.data.project}</span>}
-              <span class="text-secondary">{post.data.readMin ?? '–'}분</span>
+  <section class="filter-bar" aria-label="Post categories">
+    {categories.map((category, index) => (
+      <button
+        type="button"
+        class:list={['filter-button', { active: index === 0 }]}
+        data-filter={category}
+        aria-pressed={index === 0 ? 'true' : 'false'}
+      >
+        <span>{category}</span>
+        <span class="filter-count">{countFor(category)}</span>
+      </button>
+    ))}
+  </section>
+
+  {posts.length === 0 ? (
+    <section class="section">
+      <p class="text-secondary">No posts yet.</p>
+    </section>
+  ) : (
+    <>
+      {featuredPost && (
+        <section class="featured-section" data-post-card data-category={featuredPost.data.category}>
+          <a href={`/blog/${featuredPost.id}/`} class="featured-card surface-card">
+            <div class="featured-meta">
+              <span class="pill orange">Featured</span>
+              <span>{featuredPost.data.category}</span>
+              <span>{featuredPost.data.pubDate.toISOString().slice(0, 10)}</span>
             </div>
-            <h2 class="post-title mt-8">{post.data.title}</h2>
-            <p class="text-secondary mt-8">{post.data.description}</p>
-            {post.data.tags.length > 0 && (
-              <div class="post-tags mt-16">
-                {post.data.tags.map(tag => <span class="tag">{tag}</span>)}
+            <h2>{featuredPost.data.title}</h2>
+            <p class="text-secondary">{featuredPost.data.description}</p>
+            <div class="featured-footer">
+              <span>{featuredPost.data.readMin ?? '-'} min read</span>
+              {featuredPost.data.project && <span class="pill cyan">{featuredPost.data.project}</span>}
+            </div>
+          </a>
+        </section>
+      )}
+
+      <section class="post-list" aria-label="All posts">
+        {listPosts.map(post => (
+          <a href={`/blog/${post.id}/`} class="post-row" data-post-card data-category={post.data.category}>
+            <div class="post-date">{post.data.pubDate.toISOString().slice(0, 10)}</div>
+            <div class="post-main">
+              <div class="post-tags">
+                <span class="pill orange">{post.data.category}</span>
+                {post.data.project && <span class="pill cyan">{post.data.project}</span>}
+                <span class="pill">{post.data.readMin ?? '-'} min</span>
               </div>
-            )}
+              <h2>{post.data.title}</h2>
+              <p class="text-secondary">{post.data.description}</p>
+            </div>
           </a>
         ))}
-      </div>
-    )}
-  </section>
+      </section>
+
+      <p class="empty-state text-secondary" data-empty-state hidden>No posts in this category yet.</p>
+    </>
+  )}
+
+  <script>
+    const buttons = Array.from(document.querySelectorAll('[data-filter]'));
+    const cards = Array.from(document.querySelectorAll('[data-post-card]'));
+    const emptyState = document.querySelector('[data-empty-state]');
+
+    buttons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const filter = button.getAttribute('data-filter');
+        let visibleCount = 0;
+
+        buttons.forEach((item) => {
+          const isActive = item === button;
+          item.classList.toggle('active', isActive);
+          item.setAttribute('aria-pressed', String(isActive));
+        });
+
+        cards.forEach((card) => {
+          const category = card.getAttribute('data-category');
+          const isVisible = filter === 'All' || category === filter;
+          card.toggleAttribute('hidden', !isVisible);
+          if (isVisible) visibleCount += 1;
+        });
+
+        if (emptyState) {
+          emptyState.toggleAttribute('hidden', visibleCount !== 0);
+        }
+      });
+    });
+  </script>
 </BaseLayout>
 
 <style>
-  .section { margin: 48px 0; }
-  .post-list {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+  .page-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 220px;
+    gap: 24px;
+    align-items: end;
+    margin: 56px 0 28px;
   }
-  .post-card {
-    padding: 26px;
-    border: 1px solid var(--color-muted-ash);
-    border-radius: 10px;
-    text-decoration: none;
-    color: var(--color-ghost-white);
-    border-bottom: 1px solid var(--color-muted-ash);
+
+  .eyebrow {
+    margin-bottom: 12px;
+    color: var(--color-accent-orange);
+    font-size: 13px;
+    text-transform: uppercase;
+  }
+
+  .page-hero h1 {
+    max-width: 880px;
+    font-size: 44px;
+  }
+
+  .hero-copy {
+    max-width: 760px;
+    margin-top: 18px;
+    font-size: 17px;
+  }
+
+  .hero-count {
+    padding: 22px;
+  }
+
+  .hero-count span {
     display: block;
-    transition: background 120ms ease;
+    color: var(--color-signal-cyan);
+    font-size: 42px;
+    line-height: 1;
   }
-  .post-card:hover { background: var(--color-steel-gray); }
-  .post-meta {
+
+  .hero-count p {
+    margin-top: 10px;
+    font-size: 13px;
+  }
+
+  .filter-bar {
     display: flex;
-    gap: 16px;
-    font-size: 14px;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 14px 0 18px;
+    margin-bottom: 14px;
+    scrollbar-width: none;
+  }
+
+  .filter-bar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .filter-button {
+    flex: 0 0 auto;
+    display: inline-flex;
     align-items: center;
+    gap: 8px;
+    padding: 9px 10px;
+    border: 1px solid var(--color-muted-ash);
+    border-radius: 8px;
+    background: transparent;
+    color: var(--color-dim-gray);
+    font: inherit;
+    font-size: 13px;
+    cursor: pointer;
   }
-  .project-tag {
-    padding: 5px 8px;
-    background: var(--color-steel-gray);
-    border-radius: 10px;
-    font-size: 14px;
+
+  .filter-button:hover,
+  .filter-button.active {
+    color: var(--color-midnight-oil);
+    border-color: var(--color-accent-orange);
+    background: var(--color-accent-orange);
   }
-  .post-title {
-    font-size: 16px;
-    font-weight: 400;
+
+  .filter-count {
+    opacity: 0.75;
   }
+
+  .featured-section {
+    margin: 20px 0 18px;
+  }
+
+  .featured-card {
+    display: grid;
+    gap: 18px;
+    min-height: 260px;
+    padding: 28px;
+    border-bottom: 1px solid var(--color-muted-ash);
+  }
+
+  .featured-card:hover {
+    border-color: var(--color-accent-orange);
+    background: var(--color-panel-soft);
+  }
+
+  .featured-meta,
+  .featured-footer,
   .post-tags {
     display: flex;
     flex-wrap: wrap;
-    gap: 6px;
-  }
-  .tag {
-    padding: 5px 8px;
-    background: var(--color-steel-gray);
-    border-radius: 10px;
-    font-size: 14px;
+    align-items: center;
+    gap: 10px;
     color: var(--color-dim-gray);
+    font-size: 13px;
   }
-  .text-secondary { color: var(--color-dim-gray); }
-  .mt-8 { margin-top: 8px; }
-  .mt-16 { margin-top: 16px; }
+
+  .featured-card h2 {
+    max-width: 880px;
+    font-size: 30px;
+  }
+
+  .featured-footer {
+    justify-content: space-between;
+  }
+
+  .post-list {
+    display: grid;
+    gap: 12px;
+    margin-top: 18px;
+  }
+
+  .post-row {
+    display: grid;
+    grid-template-columns: 140px minmax(0, 1fr);
+    gap: 24px;
+    padding: 18px 0;
+    border-top: 1px solid var(--color-muted-ash);
+    border-bottom: none;
+  }
+
+  .post-row:hover {
+    border-top-color: var(--color-signal-cyan);
+  }
+
+  .post-date {
+    color: var(--color-dim-gray);
+    font-size: 13px;
+  }
+
+  .post-main {
+    display: grid;
+    gap: 10px;
+  }
+
+  .post-main h2 {
+    font-size: 20px;
+  }
+
+  .empty-state {
+    margin-top: 28px;
+    padding: 22px;
+    border: 1px solid var(--color-muted-ash);
+    border-radius: 8px;
+  }
+
+  [hidden] {
+    display: none !important;
+  }
+
+  @media (max-width: 780px) {
+    .page-hero {
+      grid-template-columns: 1fr;
+    }
+
+    .page-hero h1 {
+      font-size: 34px;
+    }
+
+    .hero-count {
+      max-width: 220px;
+    }
+
+    .post-row {
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+  }
 </style>
