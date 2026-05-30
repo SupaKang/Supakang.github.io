@@ -1,76 +1,272 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-const projects = [
+const internalProjects = [
   {
-    slug: 'hrc',
-    name: 'HRC',
-    desc: '시우량 기반 홍수량 산정 (재해영향평가용). FastAPI + React 19 + Firebase + GIS (PostGIS/GeoServer/MapLibre) + SWMM/EPANET.',
-    role: '풀스택 개발',
-    status: 'active',
+    slug: 'hourly-rainfall-calculator',
+    name: 'Hourly Rainfall Calculator',
+    domain: 'Hydrology / rainfall calculation',
+    problem: 'Rainfall review work depends on repeated data entry, manual calculation steps, and inconsistent review habits.',
+    role: 'Solo internal product developer',
+    stack: ['React', 'TypeScript', 'FastAPI', 'Python'],
+    impact: ['Standardized input flow', 'Reduced manual work', 'Lower human-error risk'],
   },
-  { slug: 'nm',  name: 'NM',  desc: '(placeholder — 사용자 description 입력 대기)', role: '—', status: 'active' },
-  { slug: 'oc',  name: 'OC',  desc: '(placeholder)', role: '—', status: 'active' },
-  { slug: 'sl',  name: 'SL',  desc: '(placeholder)', role: '—', status: 'active' },
-  { slug: 'wdd', name: 'WDD', desc: '(placeholder)', role: '—', status: 'active' },
-  { slug: 'crw', name: 'CRW', desc: '(placeholder)', role: '—', status: 'active' },
-  { slug: 'ds',  name: 'DS',  desc: '(placeholder)', role: '—', status: 'active' },
+  {
+    slug: 'sunlight-analysis',
+    name: 'Sunlight Analysis',
+    domain: 'Sunlight review / GIS / CAD-DXF',
+    problem: 'Analysis data and CAD/GIS inputs need a workflow that is easier to repeat, inspect, and hand off.',
+    role: 'Solo internal product developer',
+    stack: ['React', 'TypeScript', 'GIS', 'CAD/DXF', 'Firebase'],
+    impact: ['Structured analysis workflow', 'Faster input handling', 'Reusable review process'],
+  },
+  {
+    slug: 'slope-calculator',
+    name: 'Slope Calculator',
+    domain: 'Slope review / engineering calculation',
+    problem: 'Slope-related calculation and review work needs a consistent interface for domain inputs and output checking.',
+    role: 'Solo internal product developer',
+    stack: ['React', 'FastAPI', 'Python', 'Domain logic'],
+    impact: ['Internalized paid-tool workflow', 'Reduced repeated calculation work', 'More consistent review outputs'],
+  },
+];
+
+const publicProjects = [
+  {
+    name: 'supablog',
+    href: 'https://supakang.github.io/',
+    desc: 'Personal tech blog and portfolio built with Astro, Tailwind, MDX, and GitHub Pages automation.',
+  },
+  {
+    name: 'SubwayHero',
+    href: 'https://github.com/SupaKang/SubwayHero',
+    desc: 'Design-thinking prototype for secondhand delivery and senior courier matching.',
+  },
+  {
+    name: 'FlixKooKoo',
+    href: 'https://github.com/SupaKang/flixkookoo',
+    desc: 'TMDB API movie search and watchlist web app.',
+  },
+  {
+    name: 'QR Generator',
+    href: 'https://github.com/SupaKang/qr-generator',
+    desc: 'Lightweight browser-based QR generator.',
+  },
 ];
 ---
-<BaseLayout title="Projects | supablog" description="진행 중인 7 프로젝트 목록 — HRC / NM / OC / SL / WDD / CRW / DS">
-  <section class="section">
-    <h1>Projects</h1>
-    <p class="text-secondary mt-16">진행 중인 7 프로젝트 — 각 도메인·역할·상태 요약</p>
+<BaseLayout title="Projects | SupaKang" description="Internal products and public experiments by SupaKang.">
+  <section class="page-hero">
+    <div class="eyebrow">Project map</div>
+    <h1>Internal tools first. Public experiments second.</h1>
+    <p class="text-secondary hero-copy">
+      The core work is private company software for construction and environmental workflows. Public projects stay here
+      as supporting evidence of UI, product thinking, and web development history.
+    </p>
   </section>
 
   <section class="section">
-    <div class="grid">
-      {projects.map(p => (
-        <article id={p.slug} class="project-card">
-          <div class="card-num text-secondary">{p.name}</div>
-          <div class="card-desc mt-8">{p.desc}</div>
-          <div class="card-meta mt-16">
-            <span class="text-secondary">{p.role}</span>
-            <span class="status-tag">{p.status}</span>
+    <div class="section-header">
+      <div>
+        <div class="eyebrow">Internal products</div>
+        <h2>Company workflow software</h2>
+      </div>
+      <span class="pill orange">Private / Internal</span>
+    </div>
+
+    <div class="internal-grid">
+      {internalProjects.map((project, index) => (
+        <article id={project.slug} class="internal-card surface-card">
+          <div class="card-topline">
+            <span class="project-number">0{index + 1}</span>
+            <span class="pill cyan">{project.domain}</span>
+          </div>
+          <h3>{project.name}</h3>
+          <p class="problem text-secondary">{project.problem}</p>
+
+          <div class="field-group">
+            <span class="field-label">Role</span>
+            <span>{project.role}</span>
+          </div>
+
+          <div class="field-group">
+            <span class="field-label">Stack</span>
+            <div class="pill-list">
+              {project.stack.map(item => <span class="pill">{item}</span>)}
+            </div>
+          </div>
+
+          <div class="field-group">
+            <span class="field-label">Impact</span>
+            <div class="impact-list">
+              {project.impact.map(item => <span>{item}</span>)}
+            </div>
           </div>
         </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-header">
+      <div>
+        <div class="eyebrow">Public work</div>
+        <h2>Open projects and experiments</h2>
+      </div>
+    </div>
+
+    <div class="public-list">
+      {publicProjects.map(project => (
+        <a href={project.href} class="public-row" target="_blank" rel="noopener">
+          <div>
+            <h3>{project.name}</h3>
+            <p class="text-secondary">{project.desc}</p>
+          </div>
+          <span class="open-label">Open</span>
+        </a>
       ))}
     </div>
   </section>
 </BaseLayout>
 
 <style>
-  .section { margin: 48px 0; }
-  .grid {
+  .page-hero {
+    margin: 56px 0 48px;
+    max-width: 920px;
+  }
+
+  .eyebrow {
+    margin-bottom: 12px;
+    color: var(--color-accent-orange);
+    font-size: 13px;
+    text-transform: uppercase;
+  }
+
+  .page-hero h1 {
+    font-size: 44px;
+  }
+
+  .hero-copy {
+    margin-top: 18px;
+    font-size: 17px;
+  }
+
+  .section {
+    margin: 64px 0;
+  }
+
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+
+  .internal-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 16px;
   }
-  .project-card {
-    padding: 26px;
-    border: 1px solid var(--color-muted-ash);
-    border-radius: 10px;
+
+  .internal-card {
+    display: grid;
+    gap: 18px;
+    padding: 22px;
   }
-  .card-num { font-size: 14px; }
-  .card-meta {
+
+  .internal-card:hover {
+    border-color: var(--color-accent-orange);
+    background: var(--color-panel-soft);
+  }
+
+  .card-topline {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 12px;
+  }
+
+  .project-number {
+    color: var(--color-accent-orange);
+    font-size: 13px;
+  }
+
+  .problem {
+    min-height: 96px;
+  }
+
+  .field-group {
+    display: grid;
+    gap: 8px;
+  }
+
+  .field-label {
+    color: var(--color-terrain-green);
+    font-size: 13px;
+  }
+
+  .pill-list,
+  .impact-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .impact-list span {
+    color: var(--color-dim-gray);
     font-size: 14px;
   }
-  .status-tag {
-    display: inline-block;
-    padding: 5px 8px;
-    background: var(--color-steel-gray);
-    border-radius: 10px;
+
+  .public-list {
+    display: grid;
+    gap: 10px;
   }
-  .text-secondary { color: var(--color-dim-gray); }
-  .mt-8 { margin-top: 8px; }
-  .mt-16 { margin-top: 16px; }
-  @media (max-width: 1024px) {
-    .grid { grid-template-columns: repeat(2, 1fr); }
+
+  .public-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 18px 0;
+    border-top: 1px solid var(--color-muted-ash);
   }
+
+  .public-row:hover {
+    border-top-color: var(--color-signal-cyan);
+  }
+
+  .public-row h3 {
+    font-size: 18px;
+  }
+
+  .public-row p {
+    margin-top: 8px;
+  }
+
+  .open-label {
+    flex: 0 0 auto;
+    color: var(--color-signal-cyan);
+    font-size: 14px;
+  }
+
+  @media (max-width: 980px) {
+    .internal-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .problem {
+      min-height: 0;
+    }
+  }
+
   @media (max-width: 640px) {
-    .grid { grid-template-columns: 1fr; }
+    .page-hero h1 {
+      font-size: 32px;
+    }
+
+    .section-header,
+    .public-row {
+      align-items: flex-start;
+      flex-direction: column;
+    }
   }
 </style>
