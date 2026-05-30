@@ -4,46 +4,89 @@ import { getCollection } from 'astro:content';
 
 const posts = (await getCollection('blog'))
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
-  .slice(0, 6);
+  .slice(0, 4);
 
-const projects = [
-  { slug: 'hrc', name: 'HRC', desc: '시우량 기반 홍수량 산정 · FastAPI + React + GIS' },
-  { slug: 'nm', name: 'NM',  desc: '(placeholder — 사용자 description 입력 대기)' },
-  { slug: 'oc', name: 'OC',  desc: '(placeholder)' },
-  { slug: 'sl', name: 'SL',  desc: '(placeholder)' },
-  { slug: 'wdd', name: 'WDD', desc: '(placeholder)' },
-  { slug: 'crw', name: 'CRW', desc: '(placeholder)' },
-  { slug: 'ds', name: 'DS',  desc: '(placeholder)' },
+const internalProducts = [
+  {
+    slug: 'hourly-rainfall-calculator',
+    name: 'Hourly Rainfall Calculator',
+    domain: 'Hydrology / rainfall review',
+    stack: 'React, TypeScript, FastAPI, Python',
+    impact: 'Input standardization, fewer manual steps, lower human-error risk',
+  },
+  {
+    slug: 'sunlight-analysis',
+    name: 'Sunlight Analysis',
+    domain: 'Sunlight / GIS / CAD workflow',
+    stack: 'React, TypeScript, GIS, CAD/DXF, Firebase',
+    impact: 'Structured input flow and repeatable analysis workflow',
+  },
+  {
+    slug: 'slope-calculator',
+    name: 'Slope Calculator',
+    domain: 'Slope review / engineering calculation',
+    stack: 'React, FastAPI, Python, domain logic',
+    impact: 'Internalized paid-tool workflow and reduced repeated calculation work',
+  },
+];
+
+const focusAreas = [
+  { label: 'AI Workflow', value: 'Design, code, test, docs, review' },
+  { label: 'Domain Software', value: 'Construction and environmental workflows' },
+  { label: 'Internal Tools', value: 'Private products built for real office work' },
 ];
 ---
 <BaseLayout
-  title="supablog | Sean Kang"
-  description="1인 운영자, FE 중심 풀스택. GIS·수문학 도메인 + AI 도구 협업 회고"
+  title="SupaKang | AI-native product log"
+  description="AI-native product builder working on internal construction and environmental engineering tools."
 >
   <section class="hero">
-    <div class="hero-grid">
-      <div class="card-content hero-info">
-        <h1>supablog</h1>
-        <p class="text-secondary mt-16">
-          1인 운영자, FE 중심 풀스택. GIS·수문학 도메인 + AI 도구 협업 회고.
-        </p>
-      </div>
-      <div class="card-elevated hero-image">
-        <div class="hero-num">019</div>
+    <div class="hero-copy">
+      <div class="eyebrow">AI-native product builder</div>
+      <h1>Turning domain workflows into internal software.</h1>
+      <p class="hero-lede text-secondary">
+        I build practical tools for construction and environmental engineering work with React, TypeScript,
+        FastAPI, Python, GIS/CAD data, Firebase, and multi-agent AI workflows.
+      </p>
+      <div class="hero-actions">
+        <a href="/blog/" class="btn-ghost">Read build logs</a>
+        <a href="/projects/" class="btn-ghost">View projects</a>
       </div>
     </div>
+
+    <aside class="hero-panel surface-card" aria-label="Current build focus">
+      <div class="panel-kicker">Current system</div>
+      <div class="panel-title">Internal workflow tools</div>
+      <div class="panel-grid">
+        {focusAreas.map(item => (
+          <div class="focus-row">
+            <span class="focus-label">{item.label}</span>
+            <span class="focus-value">{item.value}</span>
+          </div>
+        ))}
+      </div>
+    </aside>
   </section>
 
   <section class="section">
     <div class="section-header">
-      <h2>Featured Projects</h2>
-      <a href="/projects/" class="btn-ghost">Show All</a>
+      <div>
+        <div class="eyebrow">Internal products</div>
+        <h2>Built around real office work</h2>
+      </div>
+      <a href="/projects/" class="section-link">All projects</a>
     </div>
-    <div class="grid grid-cols-3-md-2-sm-1">
-      {projects.slice(0, 6).map(p => (
-        <a href={`/projects/#${p.slug}`} class="project-card">
-          <div class="card-num text-secondary">{p.name}</div>
-          <div class="card-desc mt-8">{p.desc}</div>
+
+    <div class="product-grid">
+      {internalProducts.map((product, index) => (
+        <a href={`/projects/#${product.slug}`} class="product-card surface-card">
+          <div class="product-index">0{index + 1}</div>
+          <h3>{product.name}</h3>
+          <p class="text-secondary">{product.domain}</p>
+          <div class="meta-stack">
+            <span class="pill cyan">{product.stack}</span>
+          </div>
+          <p class="impact">{product.impact}</p>
         </a>
       ))}
     </div>
@@ -51,18 +94,29 @@ const projects = [
 
   <section class="section">
     <div class="section-header">
-      <h2>Latest Posts</h2>
-      <a href="/blog/" class="btn-ghost">Show All</a>
+      <div>
+        <div class="eyebrow">Latest writing</div>
+        <h2>Build logs and workflow notes</h2>
+      </div>
+      <a href="/blog/" class="section-link">All posts</a>
     </div>
+
     {posts.length === 0 ? (
-      <p class="text-secondary">아직 게시된 글이 없습니다.</p>
+      <p class="text-secondary">No posts yet.</p>
     ) : (
-      <div class="grid grid-cols-3-md-2-sm-1">
+      <div class="post-grid">
         {posts.map(post => (
-          <a href={`/blog/${post.id}/`} class="post-card">
-            <div class="text-secondary">{post.data.pubDate.toISOString().slice(0, 10)}</div>
-            <div class="post-title mt-8">{post.data.title}</div>
-            <div class="text-secondary mt-16">{post.data.readMin ?? '–'}분 읽기 · {post.data.project ?? '—'}</div>
+          <a href={`/blog/${post.id}/`} class="post-card surface-card">
+            <div class="post-meta">
+              <span>{post.data.pubDate.toISOString().slice(0, 10)}</span>
+              <span class="pill orange">{post.data.category}</span>
+            </div>
+            <h3>{post.data.title}</h3>
+            <p class="text-secondary">{post.data.description}</p>
+            <div class="post-footer">
+              <span>{post.data.readMin ?? '-'} min read</span>
+              {post.data.project && <span>{post.data.project}</span>}
+            </div>
           </a>
         ))}
       </div>
@@ -72,89 +126,202 @@ const projects = [
 
 <style>
   .hero {
-    margin: 48px 0;
-  }
-  .hero-grid {
     display: grid;
-    grid-template-columns: 1fr 2fr;
-    gap: 16px;
+    grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.65fr);
+    gap: 24px;
+    align-items: stretch;
+    margin: 56px 0 64px;
   }
-  .hero-info {
-    padding: 26px;
+
+  .hero-copy {
+    min-height: 390px;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    min-height: 200px;
+    padding: 32px 0;
   }
-  .hero-info h1 {
-    font-size: 16px;
+
+  .eyebrow {
+    margin-bottom: 12px;
+    color: var(--color-accent-orange);
+    font-size: 13px;
+    text-transform: uppercase;
   }
-  .hero-image {
-    aspect-ratio: 16 / 9;
+
+  .hero h1 {
+    max-width: 860px;
+    font-size: 52px;
+  }
+
+  .hero-lede {
+    max-width: 760px;
+    margin-top: 20px;
+    font-size: 18px;
+  }
+
+  .hero-actions {
     display: flex;
-    align-items: center;
-    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 28px;
   }
-  .hero-num {
-    font-size: 96px;
-    color: var(--color-dim-gray);
-    letter-spacing: 0.24px;
-    font-weight: 400;
+
+  .hero-panel {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
   }
+
+  .panel-kicker {
+    color: var(--color-signal-cyan);
+    font-size: 13px;
+    text-transform: uppercase;
+  }
+
+  .panel-title {
+    margin-top: 12px;
+    font-size: 24px;
+    line-height: 1.2;
+  }
+
+  .panel-grid {
+    display: grid;
+    gap: 12px;
+    margin-top: 32px;
+  }
+
+  .focus-row {
+    padding: 14px;
+    border: 1px solid var(--color-muted-ash);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  .focus-label,
+  .focus-value {
+    display: block;
+  }
+
+  .focus-label {
+    color: var(--color-terrain-green);
+    font-size: 13px;
+  }
+
+  .focus-value {
+    margin-top: 6px;
+    color: var(--color-ghost-white);
+    font-size: 14px;
+  }
+
   .section {
-    margin: 48px 0;
+    margin: 64px 0;
   }
+
   .section-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
+    align-items: flex-end;
+    gap: 20px;
+    margin-bottom: 20px;
   }
-  .grid {
-    display: grid;
-    gap: 16px;
-  }
-  .grid-cols-3-md-2-sm-1 {
-    grid-template-columns: repeat(3, 1fr);
-  }
-  .project-card,
-  .post-card {
-    padding: 26px;
-    border: 1px solid var(--color-muted-ash);
-    border-radius: 10px;
-    background: transparent;
-    text-decoration: none;
-    color: var(--color-ghost-white);
-    border-bottom: 1px solid var(--color-muted-ash);
-    transition: background 120ms ease;
-  }
-  .project-card:hover,
-  .post-card:hover {
-    background: var(--color-steel-gray);
-  }
-  .post-title {
-    font-weight: 400;
-  }
-  .card-num {
+
+  .section-link {
+    color: var(--color-signal-cyan);
     font-size: 14px;
   }
-  .mt-8 { margin-top: 8px; }
-  .mt-16 { margin-top: 16px; }
 
-  @media (max-width: 1024px) {
-    .grid-cols-3-md-2-sm-1 {
-      grid-template-columns: repeat(2, 1fr);
+  .product-grid,
+  .post-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .post-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .product-card,
+  .post-card {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    min-height: 240px;
+    padding: 22px;
+    border-bottom: 1px solid var(--color-muted-ash);
+  }
+
+  .product-card:hover,
+  .post-card:hover {
+    border-color: var(--color-accent-orange);
+    background: var(--color-panel-soft);
+  }
+
+  .product-index {
+    color: var(--color-accent-orange);
+    font-size: 13px;
+  }
+
+  .meta-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .impact {
+    margin-top: auto;
+    color: var(--color-terrain-green);
+    font-size: 14px;
+  }
+
+  .post-meta,
+  .post-footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    color: var(--color-dim-gray);
+    font-size: 13px;
+  }
+
+  .post-footer {
+    margin-top: auto;
+    justify-content: space-between;
+  }
+
+  @media (max-width: 980px) {
+    .hero,
+    .product-grid,
+    .post-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .hero-copy {
+      min-height: 300px;
+    }
+
+    .hero h1 {
+      font-size: 40px;
     }
   }
+
   @media (max-width: 640px) {
-    .grid-cols-3-md-2-sm-1 {
-      grid-template-columns: 1fr;
+    .hero {
+      margin-top: 32px;
     }
-    .hero-grid {
-      grid-template-columns: 1fr;
+
+    .hero h1 {
+      font-size: 32px;
     }
-    .hero-num {
-      font-size: 64px;
+
+    .hero-lede {
+      font-size: 16px;
+    }
+
+    .section-header {
+      align-items: flex-start;
+      flex-direction: column;
     }
   }
 </style>
