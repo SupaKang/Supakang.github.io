@@ -1,0 +1,244 @@
+---
+import type { Project } from '../data/projects';
+
+interface Props {
+  project: Project;
+  href?: string;
+  external?: boolean;
+  filterable?: boolean;
+  headingLevel?: 'h2' | 'h3';
+}
+
+const {
+  project,
+  href,
+  external,
+  filterable = false,
+  headingLevel = 'h2',
+} = Astro.props;
+
+const cardHref = href ?? project.href;
+const isExternal = external ?? project.external;
+const HeadingTag = headingLevel;
+const searchText = `${project.name} ${project.category} ${project.meta}`.toLocaleLowerCase();
+const filterAttributes = filterable
+  ? {
+      'data-project-card': '',
+      'data-category': project.category,
+      'data-search': searchText,
+    }
+  : {};
+---
+
+{cardHref ? (
+  <a
+    id={project.slug}
+    href={cardHref}
+    class:list={['project-card', project.visual]}
+    target={isExternal ? '_blank' : undefined}
+    rel={isExternal ? 'noopener' : undefined}
+    {...filterAttributes}
+  >
+    <span class="card-category">{project.category}</span>
+    <div class="visual-layer" aria-hidden="true">
+      <span class="visual-chip chip-one"></span>
+      <span class="visual-chip chip-two"></span>
+      <span class="visual-chip chip-three"></span>
+    </div>
+    <div class="card-content">
+      <HeadingTag>{project.name}</HeadingTag>
+      <div class="card-meta">{project.meta}</div>
+    </div>
+  </a>
+) : (
+  <article
+    id={project.slug}
+    class:list={['project-card', project.visual]}
+    {...filterAttributes}
+  >
+    <span class="card-category">{project.category}</span>
+    <div class="visual-layer" aria-hidden="true">
+      <span class="visual-chip chip-one"></span>
+      <span class="visual-chip chip-two"></span>
+      <span class="visual-chip chip-three"></span>
+    </div>
+    <div class="card-content">
+      <HeadingTag>{project.name}</HeadingTag>
+      <div class="card-meta">{project.meta}</div>
+    </div>
+  </article>
+)}
+
+<style>
+  .project-card {
+    position: relative;
+    min-height: 320px;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+    border: 0;
+    border-radius: 24px;
+    color: #ffffff;
+    background:
+      linear-gradient(180deg, rgba(15, 18, 26, 0.06), rgba(5, 6, 9, 0.72)),
+      var(--visual-base);
+    box-shadow: 0 22px 48px rgba(24, 25, 29, 0.12);
+    isolation: isolate;
+    transition: transform 180ms ease, box-shadow 180ms ease;
+  }
+
+  .project-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 30px 68px rgba(24, 25, 29, 0.18);
+  }
+
+  .project-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    background:
+      linear-gradient(125deg, rgba(255, 255, 255, 0.16), transparent 38%),
+      var(--visual-base);
+    transform: scale(1.02);
+  }
+
+  .project-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(180deg, transparent 25%, rgba(0, 0, 0, 0.42) 58%, rgba(0, 0, 0, 0.74) 100%);
+  }
+
+  .visual-ai {
+    --visual-base:
+      linear-gradient(135deg, #3458ff 0%, #18243d 44%, #07090f 100%);
+  }
+
+  .visual-workflow {
+    --visual-base:
+      linear-gradient(135deg, #16a879 0%, #14373d 42%, #080c10 100%);
+  }
+
+  .visual-cad {
+    --visual-base:
+      linear-gradient(135deg, #13151d 0%, #365dd8 46%, #f1a33a 100%);
+  }
+
+  .visual-sun {
+    --visual-base:
+      linear-gradient(135deg, #ffbf48 0%, #df5c32 44%, #202126 100%);
+  }
+
+  .visual-rain {
+    --visual-base:
+      linear-gradient(135deg, #7cc7ff 0%, #3158f5 48%, #111827 100%);
+  }
+
+  .visual-system {
+    --visual-base:
+      linear-gradient(135deg, #7166ff 0%, #243048 46%, #08090f 100%);
+  }
+
+  .visual-lilac {
+    --visual-base:
+      linear-gradient(135deg, #8c7dff 0%, #3158f5 42%, #111827 100%);
+  }
+
+  .card-category {
+    position: absolute;
+    top: 22px;
+    left: 22px;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    min-height: 32px;
+    padding: 0 13px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.22);
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 650;
+    backdrop-filter: blur(16px);
+  }
+
+  .visual-layer {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+  }
+
+  .visual-layer::before {
+    content: "";
+    position: absolute;
+    inset: 18% -10% auto 42%;
+    height: 36%;
+    border: 1px solid rgba(255, 255, 255, 0.24);
+    border-radius: 32px;
+    transform: rotate(-12deg);
+  }
+
+  .visual-chip {
+    position: absolute;
+    display: block;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  .chip-one {
+    width: 44%;
+    height: 10px;
+    top: 24%;
+    left: 12%;
+    transform: rotate(-8deg);
+  }
+
+  .chip-two {
+    width: 30%;
+    height: 10px;
+    top: 34%;
+    left: 20%;
+    transform: rotate(-8deg);
+  }
+
+  .chip-three {
+    width: 54%;
+    height: 10px;
+    top: 44%;
+    left: 8%;
+    transform: rotate(-8deg);
+  }
+
+  .card-content {
+    width: 100%;
+    display: grid;
+    gap: 16px;
+    padding: 30px;
+  }
+
+  .card-content :is(h2, h3) {
+    max-width: 760px;
+    color: #ffffff;
+    font-size: clamp(22px, 1.9vw, 30px);
+    line-height: 1.08;
+    text-wrap: balance;
+  }
+
+  .card-meta {
+    color: rgba(255, 255, 255, 0.76);
+    font-size: 15px;
+    font-weight: 650;
+  }
+
+  @media (max-width: 720px) {
+    .project-card {
+      min-height: 360px;
+    }
+
+    .card-content {
+      padding: 24px;
+    }
+  }
+</style>

@@ -1,40 +1,26 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import PostCard from '../components/PostCard.astro';
+import { projects } from '../data/projects';
 import { getCollection } from 'astro:content';
 
 const posts = (await getCollection('blog'))
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
   .slice(0, 4);
 
-const internalProducts = [
-  {
-    slug: 'hourly-rainfall-calculator',
-    name: 'Hourly Rainfall Calculator',
-    domain: 'Hydrology / rainfall review',
-    stack: 'React, TypeScript, FastAPI, Python',
-    impact: 'Input standardization, fewer manual steps, lower human-error risk',
-  },
-  {
-    slug: 'sunlight-analysis',
-    name: 'Sunlight Analysis',
-    domain: 'Sunlight / GIS / CAD workflow',
-    stack: 'React, TypeScript, GIS, CAD/DXF, Firebase',
-    impact: 'Structured input flow and repeatable analysis workflow',
-  },
-  {
-    slug: 'slope-calculator',
-    name: 'Slope Calculator',
-    domain: 'Slope review / engineering calculation',
-    stack: 'React, FastAPI, Python, domain logic',
-    impact: 'Internalized paid-tool workflow and reduced repeated calculation work',
-  },
-];
+const featuredProjectSlugs = new Set([
+  'hourly-rainfall-calculator',
+  'sunlight-analysis',
+  'slope-calculator',
+]);
+const internalProducts = projects.filter(project => featuredProjectSlugs.has(project.slug));
+const postVisuals = ['visual-ai', 'visual-workflow', 'visual-cad', 'visual-sun'];
+const decoratedPosts = posts.map((post, index) => ({
+  post,
+  visual: postVisuals[index % postVisuals.length],
+}));
 
-const focusAreas = [
-  { label: 'AI Workflow', value: 'Design, code, test, docs, review' },
-  { label: 'Domain Software', value: 'Construction and environmental workflows' },
-  { label: 'Internal Tools', value: 'Private products built for real office work' },
-];
 ---
 <BaseLayout
   title="SupaKang | AI-native product log"
@@ -45,25 +31,15 @@ const focusAreas = [
       <div class="eyebrow">AI-native product builder</div>
       <h1>Turning domain workflows into internal software.</h1>
       <p class="hero-lede text-secondary">
-        I build practical tools for construction and environmental engineering work with React, TypeScript,
-        FastAPI, Python, GIS/CAD data, Firebase, and multi-agent AI workflows.
+        I build practical tools for construction and environmental engineering as a full-stack developer,
+        integrating multi-agent AI workflows.
       </p>
-      <div class="hero-actions">
-        <a href="/blog/" class="btn-ghost">Read build logs</a>
-        <a href="/projects/" class="btn-ghost">View projects</a>
-      </div>
     </div>
 
     <aside class="hero-panel surface-card" aria-label="Current build focus">
-      <div class="panel-kicker">Current system</div>
-      <div class="panel-title">Internal workflow tools</div>
-      <div class="panel-grid">
-        {focusAreas.map(item => (
-          <div class="focus-row">
-            <span class="focus-label">{item.label}</span>
-            <span class="focus-value">{item.value}</span>
-          </div>
-        ))}
+      <div class="panel-copy">
+        <div class="panel-kicker">Current system</div>
+        <div class="panel-title">Internal workflow tools</div>
       </div>
     </aside>
   </section>
@@ -78,16 +54,8 @@ const focusAreas = [
     </div>
 
     <div class="product-grid">
-      {internalProducts.map((product, index) => (
-        <a href={`/projects/#${product.slug}`} class="product-card surface-card">
-          <div class="product-index">0{index + 1}</div>
-          <h3>{product.name}</h3>
-          <p class="text-secondary">{product.domain}</p>
-          <div class="meta-stack">
-            <span class="pill cyan">{product.stack}</span>
-          </div>
-          <p class="impact">{product.impact}</p>
-        </a>
+      {internalProducts.map(project => (
+        <ProjectCard project={project} href={`/projects/#${project.slug}`} headingLevel="h3" />
       ))}
     </div>
   </section>
@@ -95,8 +63,8 @@ const focusAreas = [
   <section class="section">
     <div class="section-header">
       <div>
-        <div class="eyebrow">Latest writing</div>
-        <h2>Build logs and workflow notes</h2>
+        <div class="eyebrow">Articles and Insights</div>
+        <h2>Articles and Insights</h2>
       </div>
       <a href="/blog/" class="section-link">All posts</a>
     </div>
@@ -105,19 +73,8 @@ const focusAreas = [
       <p class="text-secondary">No posts yet.</p>
     ) : (
       <div class="post-grid">
-        {posts.map(post => (
-          <a href={`/blog/${post.id}/`} class="post-card surface-card">
-            <div class="post-meta">
-              <span>{post.data.pubDate.toISOString().slice(0, 10)}</span>
-              <span class="pill orange">{post.data.category}</span>
-            </div>
-            <h3>{post.data.title}</h3>
-            <p class="text-secondary">{post.data.description}</p>
-            <div class="post-footer">
-              <span>{post.data.readMin ?? '-'} min read</span>
-              {post.data.project && <span>{post.data.project}</span>}
-            </div>
-          </a>
+        {decoratedPosts.map(({ post, visual }) => (
+          <PostCard post={post} visual={visual} headingLevel="h3" />
         ))}
       </div>
     )}
@@ -130,7 +87,7 @@ const focusAreas = [
     grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.65fr);
     gap: 30px;
     align-items: stretch;
-    margin: 36px 0 62px;
+    margin: 36px 0 86px;
   }
 
   .hero-copy {
@@ -161,13 +118,6 @@ const focusAreas = [
     font-size: 18px;
   }
 
-  .hero-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 28px;
-  }
-
   .hero-panel {
     position: relative;
     overflow: hidden;
@@ -175,38 +125,18 @@ const focusAreas = [
     padding: 28px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: flex-end;
     color: #ffffff;
     border: 0;
     background:
-      linear-gradient(180deg, rgba(20, 22, 30, 0.06), rgba(5, 7, 12, 0.72)),
-      radial-gradient(circle at 18% 18%, rgba(255, 255, 255, 0.42), transparent 19%),
-      linear-gradient(135deg, #3158f5 0%, #18253e 46%, #07090f 100%);
+      linear-gradient(180deg, rgba(8, 12, 18, 0.08), rgba(8, 12, 18, 0.72)),
+      url("https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=900&q=80") center / cover no-repeat;
     box-shadow: 0 26px 58px rgba(24, 25, 29, 0.15);
     isolation: isolate;
   }
 
-  .hero-panel::before {
-    content: "";
-    position: absolute;
-    inset: 20% -14% auto 36%;
-    height: 34%;
-    border: 1px solid rgba(255, 255, 255, 0.28);
-    border-radius: 34px;
-    transform: rotate(-13deg);
-    z-index: -1;
-  }
-
-  .hero-panel::after {
-    content: "";
-    position: absolute;
-    right: 10%;
-    top: 14%;
-    width: 38%;
-    aspect-ratio: 1;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.36), transparent 62%);
-    z-index: -1;
+  .panel-copy {
+    max-width: 260px;
   }
 
   .panel-kicker {
@@ -222,38 +152,8 @@ const focusAreas = [
     line-height: 1.2;
   }
 
-  .panel-grid {
-    display: grid;
-    gap: 12px;
-    margin-top: 32px;
-  }
-
-  .focus-row {
-    padding: 14px;
-    border: 1px solid rgba(255, 255, 255, 0.22);
-    border-radius: 18px;
-    background: rgba(255, 255, 255, 0.12);
-    backdrop-filter: blur(12px);
-  }
-
-  .focus-label,
-  .focus-value {
-    display: block;
-  }
-
-  .focus-label {
-    color: #b8ffdc;
-    font-size: 13px;
-  }
-
-  .focus-value {
-    margin-top: 6px;
-    color: #ffffff;
-    font-size: 14px;
-  }
-
   .section {
-    margin: 64px 0;
+    margin: 90px 0;
   }
 
   .section-header {
@@ -281,57 +181,6 @@ const focusAreas = [
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .product-card,
-  .post-card {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    min-height: 240px;
-    padding: 22px;
-    border-bottom: 1px solid var(--color-muted-ash);
-  }
-
-  .product-card:hover,
-  .post-card:hover {
-    transform: translateY(-3px);
-    border-color: rgba(49, 88, 245, 0.28);
-    background: #ffffff;
-    box-shadow: 0 26px 54px rgba(24, 25, 29, 0.1);
-  }
-
-  .product-index {
-    color: var(--color-accent-orange);
-    font-size: 13px;
-  }
-
-  .meta-stack {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-
-  .impact {
-    margin-top: auto;
-    color: var(--color-terrain-green);
-    font-weight: 700;
-    font-size: 14px;
-  }
-
-  .post-meta,
-  .post-footer {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 10px;
-    color: var(--color-dim-gray);
-    font-size: 13px;
-  }
-
-  .post-footer {
-    margin-top: auto;
-    justify-content: space-between;
-  }
-
   @media (max-width: 980px) {
     .hero,
     .product-grid,
@@ -350,7 +199,11 @@ const focusAreas = [
 
   @media (max-width: 640px) {
     .hero {
-      margin-top: 32px;
+      margin: 32px 0 68px;
+    }
+
+    .section {
+      margin: 72px 0;
     }
 
     .hero h1 {

@@ -1,66 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-
-const filters = ['All', 'Internal Tools', 'GIS / CAD', 'Public Work', 'Product'];
-
-const projects = [
-  {
-    slug: 'hourly-rainfall-calculator',
-    name: 'Hourly Rainfall Calculator',
-    category: 'Internal Tools',
-    meta: 'HRC | React / TypeScript / FastAPI / Python',
-    visual: 'visual-rain',
-  },
-  {
-    slug: 'sunlight-analysis',
-    name: 'Sunlight Analysis',
-    category: 'GIS / CAD',
-    meta: 'SL | GIS / CAD-DXF / React / Firebase',
-    visual: 'visual-sun',
-  },
-  {
-    slug: 'slope-calculator',
-    name: 'Slope Calculator',
-    category: 'Internal Tools',
-    meta: 'Slope | FastAPI / Python / Domain Logic',
-    visual: 'visual-cad',
-  },
-  {
-    slug: 'supablog',
-    name: 'supablog',
-    category: 'Product',
-    meta: 'Astro / MDX / GitHub Pages',
-    href: '/',
-    visual: 'visual-ai',
-  },
-  {
-    slug: 'subwayhero',
-    name: 'SubwayHero',
-    category: 'Public Work',
-    meta: 'Product Prototype / UX',
-    href: 'https://github.com/SupaKang/SubwayHero',
-    external: true,
-    visual: 'visual-workflow',
-  },
-  {
-    slug: 'flixkookoo',
-    name: 'FlixKooKoo',
-    category: 'Public Work',
-    meta: 'Movie Search · Watchlist',
-    href: 'https://github.com/SupaKang/flixkookoo',
-    external: true,
-    visual: 'visual-system',
-  },
-  {
-    slug: 'qr-generator',
-    name: 'QR Generator',
-    category: 'Public Work',
-    meta: 'Browser Tool / QR',
-    href: 'https://github.com/SupaKang/qr-generator',
-    external: true,
-    visual: 'visual-lilac',
-  },
-];
+import ProjectCard from '../components/ProjectCard.astro';
+import { filters, projects } from '../data/projects';
 
 function countFor(filter: string) {
   if (filter === 'All') return projects.length;
@@ -97,48 +38,7 @@ function countFor(filter: string) {
 
     <section class="project-grid" aria-label="Project list">
       {projects.map(project => (
-        project.href ? (
-          <a
-            id={project.slug}
-            href={project.href}
-            class:list={['project-card', project.visual]}
-            data-project-card
-            data-category={project.category}
-            data-search={`${project.name} ${project.category} ${project.meta}`.toLocaleLowerCase()}
-            target={project.external ? '_blank' : undefined}
-            rel={project.external ? 'noopener' : undefined}
-          >
-            <span class="card-category">{project.category}</span>
-            <div class="visual-layer" aria-hidden="true">
-              <span class="visual-chip chip-one"></span>
-              <span class="visual-chip chip-two"></span>
-              <span class="visual-chip chip-three"></span>
-            </div>
-            <div class="card-content">
-              <h2>{project.name}</h2>
-              <div class="card-meta">{project.meta}</div>
-            </div>
-          </a>
-        ) : (
-          <article
-            id={project.slug}
-            class:list={['project-card', project.visual]}
-            data-project-card
-            data-category={project.category}
-            data-search={`${project.name} ${project.category} ${project.meta}`.toLocaleLowerCase()}
-          >
-            <span class="card-category">{project.category}</span>
-            <div class="visual-layer" aria-hidden="true">
-              <span class="visual-chip chip-one"></span>
-              <span class="visual-chip chip-two"></span>
-              <span class="visual-chip chip-three"></span>
-            </div>
-            <div class="card-content">
-              <h2>{project.name}</h2>
-              <div class="card-meta">{project.meta}</div>
-            </div>
-          </article>
-        )
+        <ProjectCard project={project} filterable />
       ))}
     </section>
 
@@ -315,183 +215,6 @@ function countFor(filter: string) {
     gap: 22px;
   }
 
-  .project-card {
-    position: relative;
-    min-height: 320px;
-    overflow: hidden;
-    display: flex;
-    align-items: flex-end;
-    border: 0;
-    border-radius: 24px;
-    color: #ffffff;
-    background:
-      linear-gradient(180deg, rgba(15, 18, 26, 0.06), rgba(5, 6, 9, 0.72)),
-      var(--visual-base);
-    box-shadow: 0 22px 48px rgba(24, 25, 29, 0.12);
-    isolation: isolate;
-    transition: transform 180ms ease, box-shadow 180ms ease;
-  }
-
-  .project-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 30px 68px rgba(24, 25, 29, 0.18);
-  }
-
-  .project-card::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: -2;
-    background:
-      radial-gradient(circle at 22% 18%, rgba(255, 255, 255, 0.28), transparent 24%),
-      linear-gradient(125deg, rgba(255, 255, 255, 0.12), transparent 36%),
-      var(--visual-base);
-    transform: scale(1.02);
-  }
-
-  .project-card::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    background:
-      linear-gradient(180deg, transparent 25%, rgba(0, 0, 0, 0.42) 58%, rgba(0, 0, 0, 0.74) 100%),
-      radial-gradient(circle at 70% 84%, rgba(49, 88, 245, 0.42), transparent 28%);
-  }
-
-  .visual-ai {
-    --visual-base:
-      linear-gradient(135deg, #3458ff 0%, #18243d 44%, #07090f 100%);
-  }
-
-  .visual-workflow {
-    --visual-base:
-      linear-gradient(135deg, #16a879 0%, #14373d 42%, #080c10 100%);
-  }
-
-  .visual-cad {
-    --visual-base:
-      linear-gradient(135deg, #13151d 0%, #365dd8 46%, #f1a33a 100%);
-  }
-
-  .visual-sun {
-    --visual-base:
-      linear-gradient(135deg, #ffbf48 0%, #df5c32 44%, #202126 100%);
-  }
-
-  .visual-rain {
-    --visual-base:
-      linear-gradient(135deg, #7cc7ff 0%, #3158f5 48%, #111827 100%);
-  }
-
-  .visual-system {
-    --visual-base:
-      linear-gradient(135deg, #7166ff 0%, #243048 46%, #08090f 100%);
-  }
-
-  .visual-lilac {
-    --visual-base:
-      linear-gradient(135deg, #8c7dff 0%, #3158f5 42%, #111827 100%);
-  }
-
-  .card-category {
-    position: absolute;
-    top: 22px;
-    left: 22px;
-    z-index: 2;
-    display: inline-flex;
-    align-items: center;
-    min-height: 32px;
-    padding: 0 13px;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.22);
-    color: #ffffff;
-    font-size: 14px;
-    font-weight: 650;
-    backdrop-filter: blur(16px);
-  }
-
-  .visual-layer {
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    overflow: hidden;
-  }
-
-  .visual-layer::before {
-    content: "";
-    position: absolute;
-    inset: 18% -10% auto 42%;
-    height: 36%;
-    border: 1px solid rgba(255, 255, 255, 0.24);
-    border-radius: 32px;
-    transform: rotate(-12deg);
-  }
-
-  .visual-layer::after {
-    content: "";
-    position: absolute;
-    right: 8%;
-    top: 16%;
-    width: 34%;
-    aspect-ratio: 1;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.34), transparent 62%);
-    filter: blur(2px);
-  }
-
-  .visual-chip {
-    position: absolute;
-    display: block;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.2);
-  }
-
-  .chip-one {
-    width: 44%;
-    height: 10px;
-    top: 24%;
-    left: 12%;
-    transform: rotate(-8deg);
-  }
-
-  .chip-two {
-    width: 30%;
-    height: 10px;
-    top: 34%;
-    left: 20%;
-    transform: rotate(-8deg);
-  }
-
-  .chip-three {
-    width: 54%;
-    height: 10px;
-    top: 44%;
-    left: 8%;
-    transform: rotate(-8deg);
-  }
-
-  .card-content {
-    width: 100%;
-    display: grid;
-    gap: 16px;
-    padding: 30px;
-  }
-
-  .card-content h2 {
-    max-width: 760px;
-    color: #ffffff;
-    font-size: clamp(22px, 1.9vw, 30px);
-    line-height: 1.08;
-    text-wrap: balance;
-  }
-
-  .card-meta {
-    color: rgba(255, 255, 255, 0.76);
-    font-size: 15px;
-    font-weight: 650;
-  }
-
   .empty-state {
     margin-top: 24px;
     padding: 24px;
@@ -523,10 +246,6 @@ function countFor(filter: string) {
       gap: 16px;
     }
 
-    .project-card {
-      min-height: 360px;
-    }
-
     .filter-button {
       min-height: 44px;
       padding: 0 14px;
@@ -537,8 +256,5 @@ function countFor(filter: string) {
       min-height: 52px;
     }
 
-    .card-content {
-      padding: 24px;
-    }
   }
 </style>

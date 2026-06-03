@@ -8,62 +8,122 @@ const contactLinks = [
   { label: 'GitHub', value: 'SupaKang', href: 'https://github.com/SupaKang' },
 ];
 
-const orchestration = [
-  'Claude와 Codex를 활용한 시스템 설계',
-  '코드 생성, 리팩터링, 기능 구현',
-  '테스트 계획과 검증 루프',
-  '문서화와 기술 글쓰기',
-  '코드 리뷰와 리스크 점검',
-  '기획, 구현, 리뷰, 검증을 위한 멀티 에이전트 오케스트레이션',
-  '역할과 모델을 나누는 멀티 AI 오케스트레이션',
+const backgroundParagraphs = [
+  'I started in interior architecture and design, where I learned how people move through space, how visual structure affects behavior, and how to design around real user contexts.',
+  'That background naturally led me into web and app design, then into software development. Over time, I moved from designing interfaces to building actual systems - web applications, internal tools, automation programs, and GIS-related add-ons and plugins.',
+  'I also spent over three years as a full-time researcher in a graduate research lab, working on national smart city R&D projects. There, I worked across service planning, living lab operations, user research, data-driven problem solving, and citizen-facing digital services.',
+  'Today, I combine these experiences into a single direction: building useful software through product thinking, design sensitivity, full-stack execution, and AI-native workflows.',
 ];
 
-const education = [
+const strengths = [
   {
-    school: '연세대학교 정보대학원',
-    degree: '정보시스템학 석사',
-    period: '2022 - 2025',
-    grade: '3.87 / 4.3',
-    courses: 'IoT 서비스플랫폼, IoT 애널리틱 & AI, 인공지능기반 사물인터넷 최적화, IT 기업가정신과 IoT 혁신',
+    title: 'Product Thinking',
+    body: [
+      'I turn ambiguous problems into clear product requirements.',
+      'My experience in service planning, user research, R&D documentation, and stakeholder collaboration helps me break down complex problems into goals, users, features, priorities, and implementation scopes.',
+      'I care about whether an idea can actually become a working product - not just whether it looks good in a document.',
+    ],
   },
   {
-    school: '학점은행제',
-    degree: '정보통신공학 학사',
-    period: '2020 - 2021',
-    grade: '3.8 / 4.5',
-    courses: 'C언어, 정보통신개론, 마이크로프로세서 I, 네트워크 I, 자료구조',
+    title: 'Full-Stack Development',
+    body: [
+      'I build working software from idea to implementation.',
+      'I work with modern web technologies such as React, TypeScript, Firebase, Supabase, and API-based architectures. Beyond web services, I also build practical software systems including automation tools, internal operation tools, and GIS program add-ons and plugins.',
+      'My focus is not limited to a specific format of software. I choose the right technical shape for the problem.',
+    ],
   },
   {
-    school: '한세대학교',
-    degree: '실내건축디자인 중퇴',
-    period: '2016 - 2020',
-    grade: '3.3 / 4.5',
-    courses: '가구디자인, 실내디자인제도, 3D컴퓨터응용디자인, 하이싸이클링디자인',
+    title: 'Design & UX',
+    body: [
+      'I design interfaces with structure, flow, and usability in mind.',
+      'My design background helps me think beyond visual styling. I care about how users understand information, move through a product, and complete tasks with minimal friction.',
+      'I see design as a structural part of product building - not decoration added at the end.',
+    ],
+  },
+  {
+    title: 'AI Workflow Engineering',
+    body: [
+      'I build workflows where AI becomes part of the development process.',
+      'I use AI systems for planning, coding, reviewing, testing, and documenting software. By separating roles across different models and agents, I create workflows that support better iteration, clearer reasoning, and faster delivery.',
+      'The goal is not to replace engineering judgment. The goal is to build better engineering systems around it.',
+    ],
+  },
+  {
+    title: 'Research-Driven Execution',
+    body: [
+      'I connect technology, users, and real-world contexts.',
+      'Through smart city, IoT, living lab, and public R&D projects, I have worked on problems that required both field understanding and technical execution.',
+      'This experience helps me approach software not only as code, but as a system used by real people in real environments.',
+    ],
   },
 ];
 
 const career = [
   {
-    company: '(주)한국건설환경',
-    role: '연구원',
-    period: '2025 - 현재',
-    summary: '자동화 프로그램 개발 및 AI 내재화 연구',
+    company: 'Korea Construction Environment Co., Ltd.',
+    role: 'Researcher',
+    period: '2025 - Present',
+    summary: 'Working on automation software development and AI integration for internal workflows. Focus areas include process automation, data handling, AI-assisted work systems, and practical software tools for engineering and environmental analysis workflows.',
   },
   {
     company: 'Oddloop',
-    role: '프리랜서',
-    period: '2018 - 현재',
-    summary: '홈페이지 개발 및 디자인 용역업무 진행',
+    role: 'Freelance Designer & Developer',
+    period: '2018 - Present',
+    summary: 'Built websites, design assets, branding materials, and client-facing digital products. Worked across visual design, web implementation, presentation materials, and small business digital production.',
+  },
+];
+
+const education = [
+  {
+    school: 'Yonsei University Graduate School of Information',
+    degree: 'M.S. in Information Systems',
+    period: '2022 - 2025',
+    grade: '3.87 / 4.3',
+    courses: [
+      'IoT service platforms',
+      'IoT analytics and AI',
+      'AI-based IoT optimization',
+      'IT entrepreneurship and IoT innovation',
+      'Smart city service planning',
+      'Human-centered technology research',
+    ],
+  },
+  {
+    school: 'Academic Credit Bank System',
+    degree: 'B.S. in Information and Communication Engineering',
+    period: '2020 - 2021',
+    grade: '3.8 / 4.5',
+    courses: [
+      'C programming',
+      'Data structures',
+      'Computer networks',
+      'Microprocessors',
+      'Information and communication systems',
+    ],
+  },
+  {
+    school: 'Hansei University',
+    degree: 'Interior Architecture Design',
+    period: '2016 - 2020',
+    grade: '3.3 / 4.5',
+    status: 'Incomplete',
+    courses: [
+      'Interior design',
+      'Furniture design',
+      '3D computer-aided design',
+      'Spatial planning',
+      'Upcycling design',
+    ],
   },
 ];
 
 const briefs = [
-  { title: '디자이너', line: '시선에 흐름을 담아요' },
-  { title: '기획자', line: '문제의 핵심을 짚어요' },
-  { title: '개발자', line: '경험을 코딩해요' },
-  { title: '스타트업', line: '협업 애호가에요' },
-  { title: '대학원', line: '공부를 오래했어요' },
-  { title: '발표자료', line: '뭐든 잘 만들어요' },
+  { title: 'Product Builder', line: 'I structure problems and turn them into buildable product systems.' },
+  { title: 'Full-Stack Developer', line: 'I build web services, automation tools, internal systems, and GIS-related plugins.' },
+  { title: 'Designer', line: 'I design user flows, interfaces, and information structures with clarity.' },
+  { title: 'PM-Oriented Planner', line: 'I define requirements, priorities, scopes, and execution plans.' },
+  { title: 'AI Workflow Engineer', line: 'I integrate AI into planning, implementation, review, testing, and documentation workflows.' },
+  { title: 'Technical Storyteller', line: 'I turn complex projects into clear documents, presentations, and technical writing.' },
 ];
 ---
 <BaseLayout
@@ -72,11 +132,19 @@ const briefs = [
 >
   <section class="about-hero">
     <div class="hero-copy">
-      <div class="eyebrow">AI-Native Product Builder</div>
-      <h1>실용적인 소프트웨어를 AI와 함께 설계하고 구현합니다.</h1>
+      <div class="eyebrow">About Me</div>
+      <h1 class="hero-title">
+        <span>AI-Native</span>
+        <span>Product Builder</span>
+      </h1>
       <p>
-        AI를 보조 도구가 아니라 엔지니어링 시스템의 일부로 사용하며,
-        multi-agent AI workflow를 기반으로 기획부터 코드 산출물까지 이어지는 개발 흐름을 만듭니다.
+        I design and build practical software with AI as part of the engineering system.
+      </p>
+      <p>
+        My work sits at the intersection of product thinking, full-stack development, design,
+        and AI-assisted engineering. I use AI not just as a productivity tool, but as an
+        integrated layer in the development workflow - from problem framing and system design
+        to implementation, review, testing, and documentation.
       </p>
     </div>
 
@@ -84,7 +152,12 @@ const briefs = [
       <h2>Contact</h2>
       <div class="contact-grid">
         {contactLinks.map(link => (
-          <a href={link.href} class="contact-link" target="_blank" rel="noopener">
+          <a
+            href={link.href}
+            class="contact-link"
+            target={link.href.startsWith('mailto:') ? undefined : '_blank'}
+            rel={link.href.startsWith('mailto:') ? undefined : 'noopener'}
+          >
             <span>{link.label}</span>
             <strong>{link.value}</strong>
           </a>
@@ -93,55 +166,32 @@ const briefs = [
     </aside>
   </section>
 
-  <section class="section orchestration-section">
-    <div class="section-heading">
-      <span>AI Orchestration</span>
-      <h2>AI를 엔지니어링 시스템의 일부로 다룹니다.</h2>
-    </div>
-
-    <div class="orchestration-grid">
-      {orchestration.map(item => (
-        <div class="capability-card">{item}</div>
-      ))}
-    </div>
-  </section>
-
   <section class="section profile-section">
+    <div class="section-heading">
+      <span>Background</span>
+      <h2>Design, research, and software execution</h2>
+    </div>
+
     <div class="profile-card">
-      <p>
-        인테리어 디자인을 전공한 뒤 웹과 앱 디자인으로 영역을 확장했고,
-        스타트업에서 실제 프로토타입 제작까지 경험했습니다.
-        이후 대학원 연구실에서 풀타임 연구원으로 3년 이상 근무하며 스마트시티 국가 R&amp;D 프로젝트에 참여했고,
-        사용자 중심의 서비스 기획부터 데이터 기반 문제 해결, 시민 대상 서비스 제작까지 폭넓은 실무 경험을 쌓았습니다.
-      </p>
-      <p>
-        특히 시민 참여 테스트베드형 프로젝트를 기획하고 운영하며 다양한 이해관계자와 협업했고,
-        현장의 문제를 서비스로 연결하는 과정에서 사용자 경험과 실질적인 구현 가능성을 함께 고민해왔습니다.
-      </p>
-      <p>
-        디자인 툴은 물론 직접 코딩을 통해 화면을 구현할 수 있는 실행력이 강점입니다.
-        최근에는 문제를 정의하고 구조화한 뒤, AI 멀티 에이전트 파이프라인을 직접 구축하여
-        기획부터 최종 코드 산출물에 이르는 E2E 프로세스를 자동화하고 효율화하는 작업방식을 이어가고 있습니다.
-      </p>
+      {backgroundParagraphs.map(paragraph => (
+        <p>{paragraph}</p>
+      ))}
     </div>
   </section>
 
   <section class="section">
     <div class="section-heading">
-      <span>Education</span>
-      <h2>학력 및 교육 사항</h2>
+      <span>Core Strengths</span>
+      <h2>How I build</h2>
     </div>
 
-    <div class="info-grid">
-      {education.map(item => (
-        <article class="info-card">
-          <div class="card-top">
-            <span>{item.period}</span>
-            <span>GPA {item.grade}</span>
-          </div>
-          <h3>{item.school}</h3>
-          <p class="role">{item.degree}</p>
-          <p class="detail">{item.courses}</p>
+    <div class="strength-grid">
+      {strengths.map(item => (
+        <article class="strength-card">
+          <h3>{item.title}</h3>
+          {item.body.map(paragraph => (
+            <p>{paragraph}</p>
+          ))}
         </article>
       ))}
     </div>
@@ -150,7 +200,7 @@ const briefs = [
   <section class="section">
     <div class="section-heading">
       <span>Career</span>
-      <h2>경력</h2>
+      <h2>Work experience</h2>
     </div>
 
     <div class="info-grid two-column">
@@ -169,8 +219,35 @@ const briefs = [
 
   <section class="section">
     <div class="section-heading">
+      <span>Education</span>
+      <h2>Academic background</h2>
+    </div>
+
+    <div class="info-grid">
+      {education.map(item => (
+        <article class="info-card education-card">
+          <div class="card-top">
+            <span>{item.period}</span>
+            <span>GPA {item.grade}</span>
+          </div>
+          <h3>{item.school}</h3>
+          <p class="role">
+            {item.degree}{item.status ? `, ${item.status}` : ''}
+          </p>
+          <ul class="course-list">
+            {item.courses.map(course => (
+              <li>{course}</li>
+            ))}
+          </ul>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-heading">
       <span>Career Brief</span>
-      <h2>경험의 축</h2>
+      <h2>Working identity</h2>
     </div>
 
     <div class="brief-grid">
@@ -182,6 +259,7 @@ const briefs = [
       ))}
     </div>
   </section>
+
 </BaseLayout>
 
 <style>
@@ -190,7 +268,7 @@ const briefs = [
     grid-template-columns: minmax(0, 1fr) minmax(300px, 410px);
     gap: 28px;
     align-items: stretch;
-    margin: 22px 0 54px;
+    margin: 22px 0 86px;
   }
 
   .hero-copy {
@@ -212,23 +290,32 @@ const briefs = [
   h1 {
     max-width: 920px;
     margin-top: 14px;
-    font-size: clamp(40px, 5vw, 72px);
+    font-size: clamp(44px, 6vw, 82px);
     line-height: 1.03;
   }
 
+  .hero-title {
+    display: grid;
+    gap: 10px;
+  }
+
+  .hero-title span {
+    display: block;
+  }
+
   .hero-copy p {
-    max-width: 760px;
+    max-width: 780px;
     margin-top: 22px;
     color: var(--color-dim-gray);
     font-size: 18px;
-    line-height: 1.75;
+    line-height: 1.72;
   }
 
   .contact-panel,
   .profile-card,
   .info-card,
   .brief-card,
-  .capability-card {
+  .strength-card {
     border: 1px solid var(--color-muted-ash);
     background: #ffffff;
     box-shadow: 0 18px 44px rgba(24, 25, 29, 0.06);
@@ -260,22 +347,36 @@ const briefs = [
     border: 1px solid var(--color-muted-ash);
     border-radius: 18px;
     background: var(--color-shell);
+    transition: background 160ms ease, border-color 160ms ease, color 160ms ease, transform 160ms ease;
+  }
+
+  .contact-link:hover {
+    transform: translateY(-2px);
+    border-color: var(--color-signal-cyan);
+    background: var(--color-midnight-oil);
   }
 
   .contact-link span {
     color: var(--color-dim-gray);
     font-size: 13px;
     font-weight: 750;
+    transition: color 160ms ease;
   }
 
   .contact-link strong {
     color: var(--color-midnight-oil);
     font-size: 15px;
     word-break: break-word;
+    transition: color 160ms ease;
+  }
+
+  .contact-link:hover span,
+  .contact-link:hover strong {
+    color: #ffffff;
   }
 
   .section {
-    margin: 58px 0;
+    margin: 96px 0;
   }
 
   .section-heading {
@@ -286,23 +387,6 @@ const briefs = [
 
   .section-heading h2 {
     font-size: clamp(26px, 3vw, 38px);
-  }
-
-  .orchestration-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 16px;
-  }
-
-  .capability-card {
-    min-height: 128px;
-    display: flex;
-    align-items: flex-end;
-    padding: 20px;
-    border-radius: 22px;
-    color: var(--color-midnight-oil);
-    font-weight: 750;
-    line-height: 1.45;
   }
 
   .profile-card {
@@ -319,6 +403,30 @@ const briefs = [
     margin: 0;
   }
 
+  .strength-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .strength-card {
+    display: grid;
+    align-content: start;
+    gap: 14px;
+    min-height: 320px;
+    padding: 24px;
+    border-radius: 24px;
+  }
+
+  .strength-card h3 {
+    font-size: 24px;
+  }
+
+  .strength-card p {
+    color: var(--color-dim-gray);
+    line-height: 1.72;
+  }
+
   .info-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -331,10 +439,15 @@ const briefs = [
 
   .info-card {
     display: grid;
+    align-content: start;
     gap: 14px;
     min-height: 280px;
     padding: 24px;
     border-radius: 24px;
+  }
+
+  .education-card {
+    min-height: 360px;
   }
 
   .card-top {
@@ -361,6 +474,32 @@ const briefs = [
     line-height: 1.7;
   }
 
+  .course-list {
+    margin: 0;
+    padding-left: 0;
+    color: var(--color-dim-gray);
+    line-height: 1.62;
+    list-style: none;
+  }
+
+  .course-list li {
+    position: relative;
+    margin: 6px 0;
+    padding-left: 18px;
+  }
+
+  .course-list li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.68em;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--color-signal-cyan);
+    box-shadow: 0 0 0 4px rgba(49, 88, 245, 0.12);
+  }
+
   .brief-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -368,7 +507,7 @@ const briefs = [
   }
 
   .brief-card {
-    min-height: 150px;
+    min-height: 170px;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
@@ -384,14 +523,14 @@ const briefs = [
   .brief-card p {
     color: var(--color-dim-gray);
     font-size: 15px;
+    line-height: 1.65;
   }
 
   @media (max-width: 1100px) {
     .about-hero,
     .info-grid,
     .info-grid.two-column,
-    .brief-grid,
-    .orchestration-grid {
+    .brief-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
@@ -401,13 +540,26 @@ const briefs = [
     }
   }
 
+  @media (max-width: 860px) {
+    .strength-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
   @media (max-width: 720px) {
     .about-hero,
     .info-grid,
     .info-grid.two-column,
-    .brief-grid,
-    .orchestration-grid {
+    .brief-grid {
       grid-template-columns: 1fr;
+    }
+
+    .about-hero {
+      margin-bottom: 64px;
+    }
+
+    .section {
+      margin: 72px 0;
     }
 
     .hero-copy {
@@ -416,7 +568,7 @@ const briefs = [
     }
 
     h1 {
-      font-size: 34px;
+      font-size: 38px;
     }
 
     .hero-copy p,
@@ -425,9 +577,11 @@ const briefs = [
     }
 
     .info-card,
-    .capability-card,
-    .brief-card {
+    .brief-card,
+    .strength-card,
+    .education-card {
       min-height: 0;
     }
+
   }
 </style>
