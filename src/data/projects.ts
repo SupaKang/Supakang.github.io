@@ -8,7 +8,7 @@ export type Project = {
   visual: string;
 };
 
-export const filters = ['All', 'Internal Tools', 'Open Source', 'Public Work', 'Product'];
+export const filters = ['All', 'Internal Tools', 'GIS / CAD', 'Open Source', 'Public Work', 'Product'];
 
 export const projects: Project[] = [
   {
@@ -21,7 +21,7 @@ export const projects: Project[] = [
   {
     slug: 'sunlight-analysis',
     name: 'Sunlight Analysis',
-    category: 'Internal Tools',
+    category: 'GIS / CAD',
     meta: 'Sunlight review engineers can explain to reviewers',
     visual: 'visual-sun',
   },
