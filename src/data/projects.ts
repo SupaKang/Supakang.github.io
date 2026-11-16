@@ -8,29 +8,56 @@ export type Project = {
   visual: string;
 };
 
-export const filters = ['All', 'Internal Tools', 'GIS / CAD', 'Public Work', 'Product'];
+export const filters = ['All', 'Internal Tools', 'Open Source', 'Public Work', 'Product'];
 
 export const projects: Project[] = [
   {
     slug: 'hourly-rainfall-calculator',
     name: 'Hourly Rainfall Calculator',
     category: 'Internal Tools',
-    meta: 'HRC | React / TypeScript / FastAPI / Python',
+    meta: 'Rainfall review without re-typing the same numbers',
     visual: 'visual-rain',
   },
   {
     slug: 'sunlight-analysis',
     name: 'Sunlight Analysis',
-    category: 'GIS / CAD',
-    meta: 'SL | GIS / CAD-DXF / React / Firebase',
+    category: 'Internal Tools',
+    meta: 'Sunlight review engineers can explain to reviewers',
     visual: 'visual-sun',
   },
   {
     slug: 'slope-calculator',
     name: 'Slope Calculator',
     category: 'Internal Tools',
-    meta: 'Slope | FastAPI / Python / Domain Logic',
+    meta: 'Fewer hand calculations in slope reviews',
     visual: 'visual-cad',
+  },
+  {
+    slug: 'newwave',
+    name: 'newWave',
+    category: 'Open Source',
+    meta: 'A lighter fork of Wave Terminal',
+    href: 'https://github.com/SupaKang/newWave',
+    external: true,
+    visual: 'visual-system',
+  },
+  {
+    slug: 'corpuskit',
+    name: 'corpuskit',
+    category: 'Open Source',
+    meta: 'Searchable memory for AI coding agents',
+    href: 'https://github.com/SupaKang/corpuskit',
+    external: true,
+    visual: 'visual-ai',
+  },
+  {
+    slug: 'supergravity',
+    name: 'SuperGravity',
+    category: 'Open Source',
+    meta: 'Web browser & app launcher inside VS Code',
+    href: 'https://github.com/SupaKang/SuperGravity',
+    external: true,
+    visual: 'visual-workflow',
   },
   {
     slug: 'supablog',
@@ -48,15 +75,6 @@ export const projects: Project[] = [
     href: 'https://github.com/SupaKang/SubwayHero',
     external: true,
     visual: 'visual-workflow',
-  },
-  {
-    slug: 'flixkookoo',
-    name: 'FlixKooKoo',
-    category: 'Public Work',
-    meta: 'Movie Search · Watchlist',
-    href: 'https://github.com/SupaKang/flixkookoo',
-    external: true,
-    visual: 'visual-system',
   },
   {
     slug: 'qr-generator',
